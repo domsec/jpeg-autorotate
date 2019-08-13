@@ -23,7 +23,7 @@ public final class JpegAutorotate {
      * <p>
      * JPEG file may potentially not contain the appropriate metadata
      * necessary for full processing. In such an event, an exception will
-     * be thrown and the JPEG fill will not be processed.
+     * be thrown and the JPEG file will not be processed.
      * </p>
      *
      * @param path
@@ -34,7 +34,7 @@ public final class JpegAutorotate {
      *            appropriate EXIF metadata, is not an acceptable image
      *            file type or file is a directory.
      */
-    public void rotate(String path) throws JpegAutorotateException {
+    public void rotate(final String path) throws JpegAutorotateException {
         rotate(new File(path));
     }
 
@@ -55,7 +55,7 @@ public final class JpegAutorotate {
      *            appropriate EXIF metadata, is not an acceptable image
      *            file type or file is a directory.
      */
-    public void rotate(File file) throws JpegAutorotateException {
+    public void rotate(final File file) throws JpegAutorotateException {
         if(file.isDirectory()) {
             throw new JpegAutorotateException("Directory is not supported", file);
         }
