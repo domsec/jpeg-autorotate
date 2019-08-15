@@ -2,76 +2,56 @@ package com.domsec.imaging;
 
 import com.domsec.JpegAutorotateException;
 import org.apache.commons.imaging.ImageReadException;
-import org.apache.commons.imaging.ImageWriteException;
-import org.apache.commons.imaging.Imaging;
 import org.apache.commons.imaging.formats.tiff.TiffField;
 import org.apache.commons.imaging.formats.tiff.TiffImageMetadata;
 import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
+import org.apache.commons.imaging.formats.tiff.write.TiffOutputDirectory;
 import org.apache.commons.imaging.formats.tiff.write.TiffOutputSet;
 
+import java.awt.color.ICC_Profile;
 import java.io.File;
-import java.io.IOException;
 
 public class JpegImageMetadata {
 
     private File file;
-    private TiffOutputSet outputSet;
     private org.apache.commons.imaging.formats.jpeg.JpegImageMetadata metadata;
     private TiffImageMetadata exif;
+    private TiffOutputSet outputSet;
+    private TiffOutputDirectory exifDirectory;
+    private ICC_Profile iccProfile;
 
-    protected JpegImageMetadata(final File file) throws JpegAutorotateException {
-        readMetadata(file);
+    protected JpegImageMetadata(File file) throws JpegAutorotateException {
         this.file = file;
-        this.exif = this.metadata.getExif();
-        readOutputSet();
+        this.metadata = JpegImageMetadataReader.readMetadata(file);
+        readExif();
+        this.outputSet = JpegImageMetadataReader.readOutputSet(file, this.exif);
+        this.exifDirectory = JpegImageMetadataReader.getOrCreateExifDirectory(file, this.outputSet);
+        this.iccProfile = JpegImageMetadataReader.readIccProfile(file);
     }
 
     /**
-     * Attempts to read the JPEG file metadata.
+     * TODO
      *
-     * @param file
-     *            File object providing a reference to a file who's metadata must
-     *            be read from.
      * @throws JpegAutorotateException
-     *            In the event the JPEG file metadata is unable to be read.
      */
-    private void readMetadata(final File file) throws JpegAutorotateException {
-        try {
-            org.apache.commons.imaging.common.ImageMetadata imageMetadata = Imaging.getMetadata(file);
-
-            if(imageMetadata == null) {
-                return;
-            }
-
-            this.metadata = (org.apache.commons.imaging.formats.jpeg.JpegImageMetadata) imageMetadata;
-        } catch(IOException | ImageReadException e) {
-            throw new JpegAutorotateException("Unable to read image metadata", file, e);
+    private void readExif() throws JpegAutorotateException {
+        if(metadata.getExif() != null) {
+            this.exif = metadata.getExif();
+        } else {
+            throw new JpegAutorotateException("Unable to read image EXIF metadata", this.file);
         }
-
     }
 
-    /**
-     * Attempts to read the JPEG file TIFF output set.
-     * <p>
-     * The JPEG file may potentially not have a TIFF output set and in
-     * such an event, it will be created.
-     * </p>
-     *
-     * @throws JpegAutorotateException
-     *            In the event the JPEG file TIFF metadata is unable to be read.
-     */
-    private void readOutputSet() throws JpegAutorotateException{
-        try {
-            this.outputSet = this.exif.getOutputSet();
+    public TiffOutputSet getOutputSet() {
+        return this.outputSet;
+    }
 
-            if (this.outputSet == null) {
-                this.outputSet = new TiffOutputSet();
-            } else {
-                this.outputSet = this.exif.getOutputSet();
-            }
-        } catch (ImageWriteException e) {
-            throw new JpegAutorotateException("Unable to read image TIFF metadata", this.file, e);
-        }
+    public TiffOutputDirectory getExifDirectory() {
+        return this.exifDirectory;
+    }
+
+    public ICC_Profile getIccProfile() {
+        return this.iccProfile;
     }
 
     /**

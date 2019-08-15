@@ -1,6 +1,8 @@
 package com.domsec;
 
 import com.domsec.file.FileProcessor;
+import com.domsec.imaging.JpegImage;
+import org.apache.commons.imaging.ImageWriteException;
 
 import java.io.File;
 
@@ -34,8 +36,8 @@ public final class JpegAutorotate {
      *            appropriate EXIF metadata, is not an acceptable image
      *            file type or file is a directory.
      */
-    public void rotate(final String path) throws JpegAutorotateException {
-        rotate(new File(path));
+    public static JpegImage rotate(final String path) throws JpegAutorotateException, ImageWriteException {
+        return rotate(new File(path));
     }
 
     /**
@@ -55,13 +57,13 @@ public final class JpegAutorotate {
      *            appropriate EXIF metadata, is not an acceptable image
      *            file type or file is a directory.
      */
-    public void rotate(final File file) throws JpegAutorotateException {
+    public static JpegImage rotate(final File file) throws JpegAutorotateException, ImageWriteException {
         if(file.isDirectory()) {
             throw new JpegAutorotateException("Directory is not supported", file);
         }
 
         if (file.isFile() && file.exists()) {
-            FileProcessor.processImage(file);
+            return FileProcessor.processImage(file);
         } else {
             throw new JpegAutorotateException("File does not exist", file);
         }
