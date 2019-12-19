@@ -1,4 +1,4 @@
-package com.domsec.file;
+package com.domsec.util;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -6,12 +6,11 @@ import java.io.FilenameFilter;
 public final class FileUtil {
 
     private FileUtil() {
-        throw new IllegalStateException("Utility Class");
+        throw new IllegalStateException("Not intended for instantiation.");
     }
 
     /**
-     * Attempts to determine if the filename is supported through the enumerated
-     * file extension filters.
+     * Attempts to determine if the file is acceptable based on its extension.
      */
     private static final FilenameFilter FILENAME_FILTER = (File dir, String name) -> {
         for(FileExtensions ext : FileExtensions.values()){
@@ -24,15 +23,12 @@ public final class FileUtil {
     };
 
     /**
-     * Attempts to determine if the file is acceptable based on its
-     * file-name extension.
+     * Attempts to determine if the file is acceptable.
      *
-     * @param file
-     *            File object providing a reference to a file
-     *            that may be an acceptable image file.
-     * @return true
-     *            If the image file extension is acceptable;
-     *            otherwise, false.
+     * @param file File object providing a reference to a file
+     *             that may be an acceptable image file.
+     * @return true If the image file extension is acceptable;
+     *              otherwise, false.
      */
     public static boolean isAcceptable(final File file) {
         return FILENAME_FILTER.accept(file, file.getName());
