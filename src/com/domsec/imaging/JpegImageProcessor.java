@@ -1,20 +1,24 @@
-package com.domsec.file;
+package com.domsec.imaging;
 
 import com.domsec.JpegAutorotateException;
-import com.domsec.imaging.JpegImage;
-import com.domsec.imaging.JpegImageTransform;
+import com.domsec.util.FileUtils;
 
 import java.awt.color.ICC_ColorSpace;
 import java.awt.image.ColorConvertOp;
 import java.io.File;
 
-public final class FileProcessor {
+public final class JpegImageProcessor {
 
-    private FileProcessor() {
-        throw new IllegalStateException("Not intended for instantiation");
+    /**
+     * Not intended for instantiation.
+     */
+    private JpegImageProcessor() {
+        throw new IllegalStateException("Not intended for instantiation.");
     }
 
     /**
+     * TODO
+     *
      * Processes the JPEG file for orientation correction, thumbnail rotation and metadata updating.
      * Processing only occurs if file type is acceptable.
      *
@@ -25,7 +29,7 @@ public final class FileProcessor {
      *            In the event the file is not a JPEG image.
      */
     public static JpegImage processImage(final File file) throws JpegAutorotateException {
-        if(FileUtil.isAcceptable(file)) {
+        if(FileUtils.isAcceptableImage(file)) {
             JpegImage jpegImage = new JpegImage(file);
 
             JpegImageTransform.rotateImage(jpegImage);
@@ -37,7 +41,7 @@ public final class FileProcessor {
 
             return jpegImage;
         } else {
-            throw new JpegAutorotateException("File is not compatible. Must be a JPEG image.", file);
+            throw new JpegAutorotateException("File is not compatible. Must be a JPEG image.");
         }
     }
 
@@ -49,7 +53,7 @@ public final class FileProcessor {
     private static void processIccProfile(JpegImage jpegImage) {
         ICC_ColorSpace ics = new ICC_ColorSpace(jpegImage.getMetadata().getIccProfile());
         ColorConvertOp cco = new ColorConvertOp( ics, null );
-        jpegImage.setBufferedImage(cco.filter( jpegImage.getBufferedImage(), null ));
+        jpegImage.setImage(cco.filter( jpegImage.getImage(), null ));
     }
 
 }

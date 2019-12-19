@@ -1,8 +1,8 @@
 package com.domsec;
 
-import com.domsec.file.FileProcessor;
+import com.domsec.util.FileUtils;
 import com.domsec.imaging.JpegImage;
-import org.apache.commons.imaging.ImageWriteException;
+import com.domsec.imaging.JpegImageProcessor;
 
 import java.io.File;
 
@@ -20,6 +20,8 @@ import java.io.File;
 public final class JpegAutorotate {
 
     /**
+     * TODO
+     *
      * Rotates and applies the correct orientation to a JPEG image, based on its
      * EXIF metadata <code>Orientation</code> tag.
      * <p>
@@ -29,18 +31,19 @@ public final class JpegAutorotate {
      * </p>
      *
      * @param path
-     *            Path to the JPEG image file
      * @return // TODO
      * @throws JpegAutorotateException
      *            In the event the JPEG file either does not contain the
      *            appropriate EXIF metadata, is not an acceptable image
      *            file type or file is a directory.
      */
-    public static JpegImage rotate(final String path) throws JpegAutorotateException, ImageWriteException {
+    public static JpegImage rotate(final String path) throws JpegAutorotateException {
         return rotate(new File(path));
     }
 
     /**
+     * TODO
+     *
      * Rotates and applies the correct orientation to a JPEG image, based on its
      * EXIF metadata <code>Orientation</code> tag.
      * <p>
@@ -57,15 +60,15 @@ public final class JpegAutorotate {
      *            appropriate EXIF metadata, is not an acceptable image
      *            file type or file is a directory.
      */
-    public static JpegImage rotate(final File file) throws JpegAutorotateException, ImageWriteException {
-        if(file.isDirectory()) {
-            throw new JpegAutorotateException("Directory is not supported", file);
+    public static JpegImage rotate(final File file) throws JpegAutorotateException {
+        if(!FileUtils.isAcceptableImage(file)) {
+            throw new JpegAutorotateException("File is not compatible, must be a JPEG image.");
         }
 
-        if (file.isFile() && file.exists()) {
-            return FileProcessor.processImage(file);
-        } else {
-            throw new JpegAutorotateException("File does not exist", file);
+        if (!file.isFile() && !file.exists()) {
+            throw new JpegAutorotateException("Image util does not exist.");
         }
+
+        return JpegImageProcessor.processImage(file);
     }
 }

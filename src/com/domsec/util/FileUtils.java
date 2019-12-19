@@ -3,9 +3,12 @@ package com.domsec.util;
 import java.io.File;
 import java.io.FilenameFilter;
 
-public final class FileUtil {
+public final class FileUtils {
 
-    private FileUtil() {
+    /**
+     * Not intended for instantiation.
+     */
+    private FileUtils() {
         throw new IllegalStateException("Not intended for instantiation.");
     }
 
@@ -23,14 +26,15 @@ public final class FileUtil {
     };
 
     /**
-     * Attempts to determine if the file is acceptable.
+     * Attempts to determine if the file is an acceptable image.
      *
-     * @param file File object providing a reference to a file
-     *             that may be an acceptable image file.
-     * @return true If the image file extension is acceptable;
-     *              otherwise, false.
+     * @param file
+     *              File object providing a reference to a file that may be
+     *              an acceptable image file.
+     * @return true
+     *              If the image file extension is acceptable; otherwise, false.
      */
-    public static boolean isAcceptable(final File file) {
+    public static boolean isAcceptableImage(final File file) {
         return FILENAME_FILTER.accept(file, file.getName());
     }
 

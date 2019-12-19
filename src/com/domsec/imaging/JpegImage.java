@@ -8,11 +8,11 @@ import java.io.File;
 public class JpegImage {
 
     private File file;
-    private BufferedImage bufferedImage;
+    private BufferedImage image;
     private JpegImageMetadata metadata;
 
     public JpegImage(final File file) throws JpegAutorotateException {
-        this.bufferedImage = JpegImageReader.readImage(file);
+        this.image = JpegImageReader.readImage(file);
         this.file = file;
         this.metadata = new JpegImageMetadata(file);
     }
@@ -21,20 +21,12 @@ public class JpegImage {
         return this.file;
     }
 
-    public void setBufferedImage(BufferedImage bufferedImage) {
-        this.bufferedImage = bufferedImage;
+    protected void setImage(BufferedImage image) {
+        this.image = image;
     }
 
-    public BufferedImage getBufferedImage() {
-        return this.bufferedImage;
-    }
-
-    public int getHeight() {
-        return this.bufferedImage.getHeight();
-    }
-
-    public int getWidth() {
-        return  this.bufferedImage.getWidth();
+    public BufferedImage getImage() {
+        return this.image;
     }
 
     public JpegImageMetadata getMetadata() {
