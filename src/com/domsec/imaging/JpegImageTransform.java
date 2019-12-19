@@ -1,6 +1,8 @@
 package com.domsec.imaging;
 
 import com.domsec.JpegAutorotateException;
+import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
+
 import java.awt.image.BufferedImage;
 
 final class JpegImageTransform {
@@ -62,30 +64,30 @@ final class JpegImageTransform {
      */
     private static BufferedImage rotateAndFlip(BufferedImage image, int orientation) throws JpegAutorotateException {
         switch (orientation) {
-            case 1:
+            case TiffTagConstants.ORIENTATION_VALUE_HORIZONTAL_NORMAL:
                 throw new JpegAutorotateException("JPEG image orientation is already correct.");
-            case 2:
+            case TiffTagConstants.ORIENTATION_VALUE_MIRROR_HORIZONTAL:
                 flipHorizontally(image);
                 break;
-            case 3:
+            case TiffTagConstants.ORIENTATION_VALUE_ROTATE_180:
                 flipVertically(image);
                 flipHorizontally(image);
                 break;
-            case 4:
+            case TiffTagConstants.ORIENTATION_VALUE_MIRROR_VERTICAL:
                 flipVertically(image);
                 break;
-            case 5:
+            case TiffTagConstants.ORIENTATION_VALUE_MIRROR_HORIZONTAL_AND_ROTATE_270_CW:
                 image = rotate90CW(image);
                 flipHorizontally(image);
                 break;
-            case 6:
+            case TiffTagConstants.ORIENTATION_VALUE_ROTATE_90_CW:
                 image = rotate90CW(image);
                 break;
-            case 7:
+            case TiffTagConstants.ORIENTATION_VALUE_MIRROR_HORIZONTAL_AND_ROTATE_90_CW:
                 image = rotate90CCW(image);
                 flipHorizontally(image);
                 break;
-            case 8:
+            case TiffTagConstants.ORIENTATION_VALUE_ROTATE_270_CW:
                 image = rotate90CCW(image);
                 break;
             default:
