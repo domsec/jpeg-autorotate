@@ -1,11 +1,15 @@
 package com.domsec.imaging;
 
 import com.domsec.JpegAutorotateException;
-import com.domsec.util.FileUtils;
 
+import javax.imageio.ImageIO;
 import java.awt.color.ICC_ColorSpace;
+import java.awt.color.ICC_Profile;
+import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 
 public final class JpegImageProcessor {
 
@@ -18,42 +22,86 @@ public final class JpegImageProcessor {
 
     /**
      * TODO
-     *
-     * Processes the JPEG file for orientation correction, thumbnail rotation and metadata updating.
-     * Processing only occurs if file type is acceptable.
+     * Processes the JPEG util for orientation correction, thumbnail rotation and metadata updating.
+     * Processing only occurs if util type is acceptable.
      *
      * @param file
-     *            File object providing a reference to a file that must be checked
-     *            to be an acceptable file type before processing.
+     *            File object providing a reference to a util that must be checked
+     *            to be an acceptable util type before processing.
+     * @return
      * @throws JpegAutorotateException
      *            In the event the file is not a JPEG image.
      */
-    public static JpegImage processImage(final File file) throws JpegAutorotateException {
-        if(FileUtils.isAcceptableImage(file)) {
-            JpegImage jpegImage = new JpegImage(file);
+    public static JpegImage process(final File file) throws JpegAutorotateException {
+        JpegImage jpegImage = new JpegImage(file);
 
-            JpegImageTransform.rotateImage(jpegImage);
+        processImage(jpegImage);
+        processThumbnail(jpegImage.getMetadata());
 
-            // TODO: Update Metadata
-            // TODO: Rotate Thumbnail
-
-            processIccProfile(jpegImage);
-
-            return jpegImage;
-        } else {
-            throw new JpegAutorotateException("File is not compatible. Must be a JPEG image.");
-        }
+        return jpegImage;
     }
 
     /**
      * TODO
      *
      * @param jpegImage
+     * @throws JpegAutorotateException
      */
-    private static void processIccProfile(JpegImage jpegImage) {
-        ICC_ColorSpace ics = new ICC_ColorSpace(jpegImage.getMetadata().getIccProfile());
-        ColorConvertOp cco = new ColorConvertOp( ics, null );
-        jpegImage.setImage(cco.filter( jpegImage.getImage(), null ));
+    private static void processImage(JpegImage jpegImage) throws JpegAutorotateException {
+        JpegImageTransform.rotateImage(jpegImage);
+
+        ICC_Profile iccProfile = jpegImage.getMetadata().getIccProfile();
+        if(iccProfile != null) {
+            BufferedImage processedImage = processIccProfile(iccProfile, jpegImage.getImage());
+            jpegImage.setImage(processedImage);
+        }
+
+        jpegImage.getMetadata().updateExif();
+    }
+
+    /**
+     * TODO
+     *
+     * @param metadata
+     * @throws JpegAutorotateException
+     */
+    private static void processThumbnail(JpegImageMetadata metadata) throws JpegAutorotateException {
+        if(metadata.getThumbnail() == null) {
+            return;
+        }
+
+        JpegImageTransform.rotateThumbnail(metadata);
+
+        ICC_Profile iccProfile = metadata.getIccProfile();
+        if(iccProfile != null) {
+            BufferedImage processedImage = processIccProfile(iccProfile, metadata.getThumbnail());
+            metadata.setThumbnail(processedImage);
+        }
+
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(metadata.getThumbnail(), "jpg", baos);
+            baos.flush();
+            byte[] imageInByte = baos.toByteArray();
+            baos.close();
+
+            metadata.updateThumbnail(imageInByte);
+        } catch(IOException e) {
+            throw new JpegAutorotateException("Unable to update JPEG image thumbnail.", e);
+        }
+    }
+
+    /**
+     * TODO
+     *
+     * @param iccProfile
+     * @param image
+     * @return
+     */
+    private static BufferedImage processIccProfile(ICC_Profile iccProfile, BufferedImage image) {
+        ICC_ColorSpace ics = new ICC_ColorSpace(iccProfile);
+        ColorConvertOp cco = new ColorConvertOp(ics, null);
+        return cco.filter(image, null);
     }
 
 }

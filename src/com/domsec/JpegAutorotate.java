@@ -8,7 +8,7 @@ import java.io.File;
 
 /**
  * Rotates and applies the correct orientation to a JPEG image, based on its
- * EXIF metadata <code>Orientation</code> tag.
+ * EXIF <code>Orientation</code> metadata tag.
  *
  * // TODO: More information and description
  *
@@ -23,7 +23,7 @@ public final class JpegAutorotate {
      * TODO
      *
      * Rotates and applies the correct orientation to a JPEG image, based on its
-     * EXIF metadata <code>Orientation</code> tag.
+     * EXIF <code>Orientation</code> metadata tag.
      * <p>
      * JPEG file may potentially not contain the appropriate metadata
      * necessary for full processing. In such an event, an exception will
@@ -45,7 +45,7 @@ public final class JpegAutorotate {
      * TODO
      *
      * Rotates and applies the correct orientation to a JPEG image, based on its
-     * EXIF metadata <code>Orientation</code> tag.
+     * EXIF <code>Orientation</code> metadata tag.
      * <p>
      * JPEG file may potentially not contain the appropriate metadata
      * necessary for full processing. In such an event, an exception will
@@ -69,6 +69,6 @@ public final class JpegAutorotate {
             throw new JpegAutorotateException("Image util does not exist.");
         }
 
-        return JpegImageProcessor.processImage(file);
+        return JpegImageProcessor.process(file);
     }
 }

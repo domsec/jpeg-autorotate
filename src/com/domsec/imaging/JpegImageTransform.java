@@ -18,9 +18,9 @@ final class JpegImageTransform {
      * @param jpegImage
      *              A valid JpegImage object reference.
      * @throws JpegAutorotateException
-     *              In the event the JpegImage object is unable to be processed and/or rotated.
+     *              In the event the buffered image of the JpegImage object is
+     *              unable to be rotated.
      */
-
     protected static void rotateImage(JpegImage jpegImage) throws JpegAutorotateException {
         BufferedImage image = rotateAndFlip(jpegImage.getImage(), jpegImage.getMetadata().getOrientation());
 
@@ -28,20 +28,36 @@ final class JpegImageTransform {
     }
 
     /**
-     * Attempts to determine and process the transformation (rotate and flip) required for the JPEG image.
-     * Transformation is based on the provided EXIF metadata <code>Orientation</code> tag value.
+     * Attempts to automatically rotate JPEG thumbnail image.
      *
+     * @param metadata
+     *              A valid JpegImageMetadata object reference
+     * @throws JpegAutorotateException
+     *              In the event the buffered thumbnail image of JpegImageMetadata object
+     *              is unable to be rotated.
+     */
+    protected static void rotateThumbnail(JpegImageMetadata metadata) throws JpegAutorotateException {
+        BufferedImage bufferedImage = rotateAndFlip(metadata.getThumbnail(), metadata.getOrientation());
+
+        metadata.setThumbnail(bufferedImage);
+    }
+
+    /**
+     * Attempts to determine and process the transformation (rotate and flip) required for the JPEG image.
+     * Transformation is based on the provided EXIF <code>Orientation</code> metadata tag value.
+     * <p>
      * Image may potentially either already be set to the correct orientation or not contain
-     * the EXIF metadata <code>Orientation</code> tag. In such an event, an exception will be
+     * the EXIF <code>Orientation</code> metadata tag. In such an event, an exception will be
      * thrown and the JPEG file will not be processed.
+     * </p>
      *
      * @param image
      *              A valid buffered image object.
      * @param orientation
-     *              A valid EXIF metadata <code>Orientation</code> tag value
+     *              A valid EXIF <code>Orientation</code> metadata tag value
      * @return If successful, a valid buffered image.
      * @throws JpegAutorotateException
-     *            In the event the JPEG file either has an unknown EXIF metadata <code>Orientation</code>
+     *            In the event the JPEG file either has an unknown EXIF <code>Orientation</code> metadata
      *            tag value or the value is already set to 1 (JPEG image is already correctly orientated).
      */
     private static BufferedImage rotateAndFlip(BufferedImage image, int orientation) throws JpegAutorotateException {
