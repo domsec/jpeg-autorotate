@@ -15,13 +15,12 @@ final class JpegImageTransform {
     }
 
     /**
-     * Attempts to automatically rotate JPEG image.
+     * Attempts to automatically rotate {@code JpegImage} {@code image}.
      *
      * @param jpegImage
-     *              A valid JpegImage object reference.
+     *              An instance of {@code JpegImage}.
      * @throws JpegAutorotateException
-     *              In the event the buffered image of the JpegImage object is
-     *              unable to be rotated.
+     *              In the event the {@code JpegImage} is unable to be rotated.
      */
     protected static void rotateImage(JpegImage jpegImage) throws JpegAutorotateException {
         BufferedImage image = rotateAndFlip(jpegImage.getImage(), jpegImage.getMetadata().getOrientation());
@@ -30,13 +29,12 @@ final class JpegImageTransform {
     }
 
     /**
-     * Attempts to automatically rotate JPEG thumbnail image.
+     * Attempts to automatically rotate {@code JpegImage} metadata {@code ExifThumbnail} image.
      *
      * @param metadata
-     *              A valid JpegImageMetadata object reference
+     *              An instance of {@code JpegImageMetadata}.
      * @throws JpegAutorotateException
-     *              In the event the buffered thumbnail image of JpegImageMetadata object
-     *              is unable to be rotated.
+     *              In the event the {@code ExifThumbnail} image is unable to be rotated.
      */
     protected static void rotateThumbnail(JpegImageMetadata metadata) throws JpegAutorotateException {
         BufferedImage bufferedImage = rotateAndFlip(metadata.getThumbnail(), metadata.getOrientation());
@@ -45,27 +43,22 @@ final class JpegImageTransform {
     }
 
     /**
-     * Attempts to determine and process the transformation (rotate and flip) required for the JPEG image.
-     * Transformation is based on the provided EXIF <code>Orientation</code> metadata tag value.
+     * Attempts to determine and process the transformation (rotate and flip) required for the {@code JpegImage}.
+     * Transformation is depends on the EXIF {@code Orientation} metadata tag value.
      * <p>
-     * Image may potentially either already be set to the correct orientation or not contain
-     * the EXIF <code>Orientation</code> metadata tag. In such an event, an exception will be
-     * thrown and the JPEG file will not be processed.
+     * {@code JpegImage} may not contain the EXIF {@code Orientation} metadata tag.
      * </p>
      *
      * @param image
-     *              A valid buffered image object.
+     *              A {@code BufferedImage} containing image data.
      * @param orientation
-     *              A valid EXIF <code>Orientation</code> metadata tag value
-     * @return If successful, a valid buffered image.
+     *              A EXIF {@code Orientation} metadata tag value.
+     * @return If successful, a {@code BufferedImage} containing transformed image data.
      * @throws JpegAutorotateException
-     *            In the event the JPEG file either has an unknown EXIF <code>Orientation</code> metadata
-     *            tag value or the value is already set to 1 (JPEG image is already correctly orientated).
+     *            In the event the {@code Orientation} value is unknown.
      */
-    private static BufferedImage rotateAndFlip(BufferedImage image, int orientation) throws JpegAutorotateException {
+    private static BufferedImage rotateAndFlip(BufferedImage image, final int orientation) throws JpegAutorotateException {
         switch (orientation) {
-            case TiffTagConstants.ORIENTATION_VALUE_HORIZONTAL_NORMAL:
-                throw new JpegAutorotateException("JPEG image orientation is already correct.");
             case TiffTagConstants.ORIENTATION_VALUE_MIRROR_HORIZONTAL:
                 flipHorizontally(image);
                 break;
@@ -98,10 +91,10 @@ final class JpegImageTransform {
     }
 
     /**
-     * Flips buffered image vertically.
+     * Flips a {@code BufferedImage} vertically.
      *
      * @param image
-     *              A valid buffered image object.
+     *              A {@code BufferedImage} containing image data.
      */
     private static void flipVertically(BufferedImage image) {
         for(int i = 0; i < image.getHeight()/2; i++) {
@@ -114,10 +107,10 @@ final class JpegImageTransform {
     }
 
     /**
-     * Flips buffered image horizontally.
+     * Flips a {@code BufferedImage} horizontally.
      *
      * @param image
-     *              A valid buffered image object.
+     *              A {@code BufferedImage} containing image data.
      */
     private static void flipHorizontally(BufferedImage image) {
         for(int i = 0; i < image.getHeight(); i++) {
@@ -131,11 +124,11 @@ final class JpegImageTransform {
     }
 
     /**
-     * Rotates buffered image 90 degrees clockwise
+     * Rotates a {@code BufferedImage} 90 degrees clockwise.
      *
      * @param image
-     *              A valid buffered image object.
-     * @return If successful, a valid buffered image.
+     *              A {@code BufferedImage} containing image data.
+     * @return A {@code BufferedImage} rotated containing rotated image data.
      */
     private static BufferedImage rotate90CW(BufferedImage image) {
         BufferedImage tempImage = new BufferedImage(image.getHeight(), image.getWidth(), image.getType());
@@ -150,11 +143,11 @@ final class JpegImageTransform {
     }
 
     /**
-     * Rotates buffered image 90 degrees counter clockwise
+     * Rotates a {@code BufferedImage} 90 degrees counter clockwise.
      *
      * @param image
-     *              A valid buffered image object.
-     * @return If successful, a valid buffered image.
+     *              A {@code BufferedImage} containing image data.
+     * @return A {@code BufferedImage} rotated containing rotated image data.
      */
     private static BufferedImage rotate90CCW(BufferedImage image) {
         BufferedImage tempImage = new BufferedImage(image.getHeight(), image.getWidth(), image.getType());

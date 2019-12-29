@@ -1,9 +1,8 @@
 package com.domsec.imaging;
 
 import com.domsec.JpegAutorotateException;
-import org.apache.commons.imaging.ImageReadException;
-import org.apache.commons.imaging.Imaging;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
@@ -17,18 +16,29 @@ final class JpegImageReader {
     }
 
     /**
-     * Attempts to read JPEG file to a buffered image.
+     * Attempts to read JPEG file to a BufferedImage.
      *
-     * @param file
-     *            A valid file object referencing a JPEG image.
-     * @return If successful, a valid buffered image.
+     * @param bytes
+     *              {@code bytes} containing a JPEG image file.
+     * @return If successful, a {@code BufferedImage} containing image data.
      * @throws JpegAutorotateException
+     *              In the event the {@code bytes} is unable to be read.
      */
-    protected static BufferedImage readImage(final File file) throws JpegAutorotateException {
+    protected static BufferedImage readImage(final byte[] bytes) throws JpegAutorotateException {
         try {
-            return Imaging.getBufferedImage(file);
-        } catch (ImageReadException | IOException e) {
-            throw new JpegAutorotateException("Unable to read JPEG image file.", e);
+            File tempFile = File.createTempFile("tmp", "jpg");
+            FileOutputStream fos = new FileOutputStream(tempFile);
+            fos.write(bytes);
+
+            BufferedImage image = ImageIO.read(tempFile);
+
+            fos.flush();
+            fos.close();
+            tempFile.deleteOnExit();
+
+            return image;
+        } catch (IOException e) {
+            throw new JpegAutorotateException("Unable to read JPEG image.", e);
         }
     }
 

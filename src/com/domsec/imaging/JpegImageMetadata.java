@@ -3,7 +3,7 @@ package com.domsec.imaging;
 import com.domsec.JpegAutorotateException;
 import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.ImageWriteException;
-import org.apache.commons.imaging.formats.jpeg.iptc.PhotoshopApp13Data;
+import org.apache.commons.imaging.formats.jpeg.JpegPhotoshopMetadata;
 import org.apache.commons.imaging.formats.tiff.*;
 import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.TiffDirectoryConstants;
@@ -15,9 +15,8 @@ import org.apache.commons.imaging.formats.tiff.write.TiffOutputSet;
 
 import java.awt.color.ICC_Profile;
 import java.awt.image.BufferedImage;
-import java.io.*;
 
-public class JpegImageMetadata {
+class JpegImageMetadata {
 
     private org.apache.commons.imaging.formats.jpeg.JpegImageMetadata rawMetadata;
     private TiffOutputSet outputSet;
@@ -25,38 +24,40 @@ public class JpegImageMetadata {
     private ICC_Profile iccProfile;
     private String xmpXml;
     private BufferedImage thumbnail;
+    private int originalOrientation;
 
-    public JpegImageMetadata(File file) throws JpegAutorotateException {
-        this.rawMetadata = JpegImageMetadataReader.readRawMetadata(file);
+    protected JpegImageMetadata(final byte[] bytes) throws JpegAutorotateException {
+        this.rawMetadata = JpegImageMetadataReader.readRawMetadata(bytes);
         TiffImageMetadata tempExif = JpegImageMetadataReader.readExif(this.rawMetadata);
         this.outputSet = JpegImageMetadataReader.readOutputSet(tempExif);
         this.exifDirectory = getOrCreateExifDirectory();
-        this.iccProfile = JpegImageMetadataReader.readIccProfile(file);
-        this.xmpXml = JpegImageMetadataReader.readXmpXml(file);
+        this.iccProfile = JpegImageMetadataReader.readIccProfile(bytes);
+        this.xmpXml = JpegImageMetadataReader.readXmpXml(bytes);
         this.thumbnail = JpegImageMetadataReader.readThumbnail(this.rawMetadata);
+        this.originalOrientation = getOrientation();
     }
 
-    public TiffOutputSet getOutputSet() {
+    protected TiffOutputSet getOutputSet() {
         return this.outputSet;
     }
 
-    public ICC_Profile getIccProfile() {
+    protected ICC_Profile getIccProfile() {
         return this.iccProfile;
     }
 
-    public String getXmpXml() {
+    protected String getXmpXml() {
         return this.xmpXml;
     }
 
-    public PhotoshopApp13Data getPhotoshop() {
-        return this.rawMetadata.getPhotoshop().photoshopApp13Data;
+    protected JpegPhotoshopMetadata getPhotoshop() {
+        return this.rawMetadata.getPhotoshop();
     }
 
     protected void setThumbnail(BufferedImage thumbnail) {
         this.thumbnail = thumbnail;
     }
 
-    public BufferedImage getThumbnail() {
+    protected BufferedImage getThumbnail() {
         return thumbnail;
     }
 
@@ -64,9 +65,9 @@ public class JpegImageMetadata {
      * Updates the thumbnail image.
      *
      * @param bytes
-     *          A valid byte representation of thumbnail image.
+     *              A {@code byte[]} containing thumbnail image data.
      */
-    protected void updateThumbnail(byte[] bytes) {
+    protected void updateThumbnail(final byte[] bytes) {
         TiffOutputDirectory thumbnailDirectory = outputSet.findDirectory(TiffDirectoryConstants.DIRECTORY_TYPE_SUB);
         JpegImageData jpg = new JpegImageData(thumbnailDirectory.getRawJpegImageData().offset, bytes.length, bytes);
 
@@ -74,120 +75,186 @@ public class JpegImageMetadata {
     }
 
     /**
-     * Attempts to get the EXIF <code>Orientation</code> metadata tag value.
+     * Attempts to get the EXIF {@code Orientation} metadata tag value.
      *
+     * @return If successful, EXIF {@code Orientation} metadata tag value.
      * @throws JpegAutorotateException
-     *            In the event the EXIF <code>Orientation</code> metadata
-     *            tag is not found.
+     *              In the event the EXIF {@code Orientation} metadata tag is not found.
      */
     protected int getOrientation() throws JpegAutorotateException {
-        TiffField field = this.rawMetadata.findEXIFValueWithExactMatch(TiffTagConstants.TIFF_TAG_ORIENTATION);
+        TiffField field = this.rawMetadata.findEXIFValue(TiffTagConstants.TIFF_TAG_ORIENTATION);
 
-        if (field == null) {
+        if(field == null) {
             throw new JpegAutorotateException("JPEG image does not have an EXIF Orientation metadata tag.");
         }
 
         try {
             return field.getIntValue();
         } catch (ImageReadException e) {
-            throw new JpegAutorotateException("Unable to read JPEG EXIF Orientation metadata tag.", e);
+            throw new JpegAutorotateException("Unable to read JPEG image EXIF Orientation metadata tag.", e);
         }
     }
 
     /**
-     * Attempts to read or create EXIF metadata directory.
+     * Attempts to read or create {@code ExifDirectory}.
      *
-     * @return A valid TiffOutputDirectory object.
+     * @return If successful, a valid {@code TiffOutputDirectory} instance.
      * @throws JpegAutorotateException
-     *              In the event the EXIF metadata directory does not exist or
+     *              In the event the {@code ExifDirectory} does not exist or
      *              is unable to be created.
      */
     private TiffOutputDirectory getOrCreateExifDirectory() throws JpegAutorotateException {
         try {
             return this.outputSet.getOrCreateExifDirectory();
         } catch (ImageWriteException e) {
-            throw new JpegAutorotateException("Unable to get or create JPEG EXIF metadata directory.", e);
+            throw new JpegAutorotateException("Unable to get or create JPEG image EXIF metadata directory.", e);
         }
     }
 
     /**
-     * Attempts to add or update EXIF metadata information:
-     *  - <code>Orientation</code>
-     *  - <code>Width</code>
-     *  - <code>Height</code>
+     * Attempts to update {@code metadata} information:
+     * <p><ul>
+     * <li>EXIF</li>
+     * <li>XMP</li>
+     * </ul></p>
      *
      * @throws JpegAutorotateException
-     *              In the event the EXIF metadata is unable to be added or updated.
+     *              In the event the EXIF {@code metadata} is unable to be updated.
      */
-    protected void updateExif() throws JpegAutorotateException {
-        addOrUpdateExifOrientation();
-        addOrUpdateExifWidth();
-        addOrUpdateExifHeight();
+    protected void updateMetadata() throws JpegAutorotateException {
+        updateExifOrientation();
+        updateAllMetadataDimensions();
     }
 
     /**
-     * Attempts to add or update EXIF <code>Orientation</code> metadata tags.
+     * Attempts to update all {@code metadata} information containing:
+     * <p><ul>
+     * <li>Height</li>
+     * <li>Width</li>
+     * </ul></p>
      *
      * @throws JpegAutorotateException
-     *              In the event the EXIF <code>Orientation</code> metadata tags
-     *              is unable to be added or updated.
+     *              In the event the EXIF {@code Height} and/or
+     *              {@code Width} metadata is unable to be updated.
      */
-    private void addOrUpdateExifOrientation() throws JpegAutorotateException {
-        if(this.outputSet.findField(TiffTagConstants.TIFF_TAG_ORIENTATION) != null) {
-            this.outputSet.removeField(TiffTagConstants.TIFF_TAG_ORIENTATION);
-        }
+    private void updateAllMetadataDimensions() throws JpegAutorotateException {
+        if(this.outputSet.findField(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH) != null || this.outputSet.findField(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH) != null) {
+            try {
+                int height = this.rawMetadata.findEXIFValue(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH).getIntValue();
+                int width = this.rawMetadata.findEXIFValue(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH).getIntValue();
 
+                switch(this.originalOrientation) {
+                    case TiffTagConstants.ORIENTATION_VALUE_MIRROR_HORIZONTAL_AND_ROTATE_270_CW:
+                    case TiffTagConstants.ORIENTATION_VALUE_ROTATE_90_CW:
+                    case TiffTagConstants.ORIENTATION_VALUE_MIRROR_HORIZONTAL_AND_ROTATE_90_CW:
+                    case TiffTagConstants.ORIENTATION_VALUE_ROTATE_270_CW:
+                        height = this.rawMetadata.findEXIFValue(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH).getIntValue();
+                        width = this.rawMetadata.findEXIFValue(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH).getIntValue();
+                        break;
+                }
+
+                updateExifHeight(height);
+                updateExifWidth(width);
+                updateXmpXml(height, width);
+            } catch (Exception e) {
+                throw new JpegAutorotateException("Unable to read JPEG image EXIF Image Width and/or Image Height metadata tags.", e);
+            }
+        }
+    }
+
+    /**
+     * Attempts to update EXIF {@code Orientation} metadata tag.
+     *
+     * @throws JpegAutorotateException
+     *              In the event the EXIF {@code Orientation} metadata tag
+     *              is unable to be updated.
+     */
+    private void updateExifOrientation() throws JpegAutorotateException {
         try {
+            this.outputSet.removeField(TiffTagConstants.TIFF_TAG_ORIENTATION);
+
             this.outputSet.getRootDirectory().add(TiffTagConstants.TIFF_TAG_ORIENTATION, ((Integer) TiffTagConstants.ORIENTATION_VALUE_HORIZONTAL_NORMAL).shortValue());
         } catch (ImageWriteException e) {
-            throw new JpegAutorotateException("Unable to update JPEG EXIF Orientation metadata tag to Horizontal (normal).", e);
+            throw new JpegAutorotateException("Unable to update JPEG image EXIF Orientation metadata tag to Horizontal (normal).", e);
         }
     }
 
     /**
-     * Attempts to add or update EXIF <code>Image Width</code> metadata tags.
+     * Attempts to update EXIF {@code Width} metadata tags.
      *
+     * @param width
      * @throws JpegAutorotateException
-     *              In the event the EXIF <code>Image Width</code> metadata tags
-     *              are unable to be added or updated.
+     *              In the event the EXIF {@code Width} metadata tags
+     *              are unable to be updated.
      */
-    private void addOrUpdateExifWidth() throws JpegAutorotateException {
-        if (this.outputSet.findField(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH) != null) {
+    private void updateExifWidth(int width) throws JpegAutorotateException {
+        try {
+            // EXIF Width
             this.outputSet.removeField(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH);
-            this.outputSet.removeField(new TagInfoShort("RelatedImageWidth", 0x1001, TiffDirectoryType.EXIF_DIRECTORY_INTEROP_IFD));
-        }
 
-        try {
-            int width = this.rawMetadata.findEXIFValue(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH).getIntValue();
-
-            this.exifDirectory.add(new TagInfoShort("RelatedImageWidth", 0x1001,TiffDirectoryType.EXIF_DIRECTORY_INTEROP_IFD), ((Integer) width).shortValue());
             this.exifDirectory.add(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH, ((Integer) width).shortValue());
-        } catch (ImageReadException | ImageWriteException e) {
-            throw new JpegAutorotateException("Unable to update JPEG EXIF Image Width metadata tags.", e);
+
+            // TIFF RelatedImageWidth
+            TagInfoShort relatedImageWidth = new TagInfoShort("RelatedImageWidth", 0x1001, TiffDirectoryType.EXIF_DIRECTORY_INTEROP_IFD);
+
+            if(this.outputSet.findField(relatedImageWidth) != null) {
+                this.outputSet.removeField(relatedImageWidth);
+
+                this.exifDirectory.add(relatedImageWidth, ((Integer) width).shortValue());
+            }
+        } catch (ImageWriteException e) {
+            throw new JpegAutorotateException("Unable to update JPEG image EXIF Image Width metadata tags.", e);
         }
     }
 
     /**
-     * Attempts to add or update EXIF <code>Image Height</code> metadata tags.
+     * Attempts to update EXIF {@code Height} metadata tags.
      *
+     * @param height
      * @throws JpegAutorotateException
-     *              In the event the EXIF <code>Image Height</code> metadata tags
-     *              are unable to be added or updated.
+     *              In the event the EXIF {@code Height} metadata tags
+     *              are unable to be updated.
      */
-    private void addOrUpdateExifHeight() throws JpegAutorotateException {
-        if(this.outputSet.findField(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH) != null) {
-            this.outputSet.removeField(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH);
-            this.outputSet.removeField(new TagInfoShort("RelatedImageHeight", 0x1002, TiffDirectoryType.EXIF_DIRECTORY_INTEROP_IFD));
-        }
-
+    private void updateExifHeight(int height) throws JpegAutorotateException {
         try {
-            int height = this.rawMetadata.findEXIFValue(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH).getIntValue();
+            // EXIF Height
+            this.outputSet.removeField(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH);
 
-            this.exifDirectory.add(new TagInfoShort("RelatedImageHeight", 0x1002,TiffDirectoryType.EXIF_DIRECTORY_INTEROP_IFD), ((Integer) height).shortValue());
             this.exifDirectory.add(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH, ((Integer) height).shortValue());
-        } catch (ImageReadException | ImageWriteException e) {
-            throw new JpegAutorotateException("Unable to update JPEG EXIF Image Height metadata tags.", e);
+
+            // TIFF RelatedImageHeight
+            TagInfoShort relatedImageHeight = new TagInfoShort("RelatedImageHeight", 0x1002, TiffDirectoryType.EXIF_DIRECTORY_INTEROP_IFD);
+
+            if(this.outputSet.findField(relatedImageHeight) != null) {
+                this.outputSet.removeField(relatedImageHeight);
+
+                this.exifDirectory.add(relatedImageHeight, ((Integer) height).shortValue());
+            }
+        } catch (ImageWriteException e) {
+            throw new JpegAutorotateException("Unable to update JPEG image EXIF Image Height metadata tags.", e);
         }
+    }
+
+    /**
+     * Attempts to update {@code xmpXml} metadata values.
+     *
+     * @param height
+     * @param width
+     */
+    private void updateXmpXml(int height, int width) {
+        String xmp = getXmpXml();
+
+        if(xmp == null) {
+            return;
+        }
+
+        this.xmpXml = xmp.replaceAll("tiff:Orientation=\"\\d\"", "tiff:Orientation=\"" + ((Integer) TiffTagConstants.ORIENTATION_VALUE_HORIZONTAL_NORMAL).shortValue() + "\"")
+                            .replaceAll("tiff:ImageLength=\"\\d+\"", "tiff:ImageLength=\"" + height + "\"")
+                            .replaceAll("tiff:ImageWidth=\"\\d+\"", "tiff:ImageWidth=\"" + width + "\"")
+                            .replaceAll("exif:PixelXDimension=\"\\d+\"", "exif:PixelXDimension=\"" + width + "\"")
+                            .replaceAll("exif:PixelYDimension=\"\\d+\"", "exif:PixelYDimension=\"" + height + "\"")
+                            .replaceAll("xmp:ThumbnailsHeight=\"\\d+\"", "xmp:ThumbnailsHeight=\"" + getThumbnail().getHeight() + "\"")
+                            .replaceAll("xmp:ThumbnailsWidth=\"\\d+\"", "xmp:ThumbnailsWidth=\"" + getThumbnail().getWidth() + "\"");
     }
 
 }

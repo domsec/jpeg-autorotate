@@ -3,7 +3,7 @@ package com.domsec.util;
 /**
  * Enumeration of supported file extensions.
  */
-enum FileExtensions {
+enum Extensions {
     JPG,
     JPEG,
     JPE
