@@ -65,7 +65,7 @@ public final class JpegImageProcessor {
         JpegImage jpegImage = new JpegImage(bytes);
 
         // Determine if JPEG image is already properly oriented.
-        if(jpegImage.getMetadata().getOrientation() == TiffTagConstants.ORIENTATION_VALUE_HORIZONTAL_NORMAL) {
+        if (jpegImage.getMetadata().getOrientation() == TiffTagConstants.ORIENTATION_VALUE_HORIZONTAL_NORMAL) {
             return bytes;
         }
 
@@ -95,7 +95,7 @@ public final class JpegImageProcessor {
         JpegImageTransform.rotateImage(jpegImage);
 
         ICC_Profile iccProfile = jpegImage.getMetadata().getIccProfile();
-        if(iccProfile != null) {
+        if (iccProfile != null) {
             BufferedImage processedImage = processIccProfile(iccProfile, jpegImage.getImage());
             jpegImage.setImage(processedImage);
         }
@@ -115,14 +115,14 @@ public final class JpegImageProcessor {
      *              In the event the {@code ExifThumbnail} image is unable to be rotated.
      */
     private static void processThumbnail(JpegImageMetadata metadata) throws JpegAutorotateException {
-        if(metadata.getThumbnail() == null) {
+        if (metadata.getThumbnail() == null) {
             return;
         }
 
         JpegImageTransform.rotateThumbnail(metadata);
 
         ICC_Profile iccProfile = metadata.getIccProfile();
-        if(iccProfile != null) {
+        if (iccProfile != null) {
             BufferedImage processedImage = processIccProfile(iccProfile, metadata.getThumbnail());
             metadata.setThumbnail(processedImage);
         }
@@ -166,7 +166,7 @@ public final class JpegImageProcessor {
             baos.close();
 
             return bytes;
-        } catch(IOException e) {
+        } catch (IOException e) {
             throw new JpegAutorotateException("Unable to update JPEG image thumbnail.", e);
         }
     }
@@ -187,8 +187,9 @@ public final class JpegImageProcessor {
      *              to a {@code byte[]}.
      */
     private static byte[] writeImage(JpegImage image) throws JpegAutorotateException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
         try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(image.getImage(), "jpeg", baos);
             byte [] data = baos.toByteArray();
             baos.reset();
@@ -200,7 +201,7 @@ public final class JpegImageProcessor {
             baos.reset();
 
             // Update IPTC/Photoshop metadata
-            if(image.getMetadata().getPhotoshop() != null) {
+            if (image.getMetadata().getPhotoshop() != null) {
                 baos = new ByteArrayOutputStream();
                 new JpegIptcRewriter().writeIPTC(data, baos, image.getMetadata().getPhotoshop().photoshopApp13Data);
                 data = baos.toByteArray();
@@ -208,18 +209,17 @@ public final class JpegImageProcessor {
             }
 
             // Update XMP metadata
-            if(image.getMetadata().getXmpXml() != null) {
+            if (image.getMetadata().getXmpXml() != null) {
                 baos = new ByteArrayOutputStream();
                 new JpegXmpRewriter().updateXmpXml(data, baos, image.getMetadata().getXmpXml());
                 data = baos.toByteArray();
                 baos.reset();
             }
 
-            baos.flush();
             baos.close();
 
             return data;
-        } catch(ImageWriteException | ImageReadException | IOException e) {
+        } catch (ImageWriteException | ImageReadException | IOException e) {
             throw new JpegAutorotateException("Unable to read/write rotated JPEG image to byte array.", e);
         }
     }

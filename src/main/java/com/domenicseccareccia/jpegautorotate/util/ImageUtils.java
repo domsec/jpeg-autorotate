@@ -40,8 +40,8 @@ public final class ImageUtils {
      * Attempts to determine if the image file {@code name} is acceptable.
      */
     private static final FilenameFilter FILENAME_FILTER = (File dir, String name) -> {
-        for(Extensions ext : Extensions.values()){
-            if(name.toUpperCase().contains(ext.name())) {
+        for (Extensions ext : Extensions.values()){
+            if (name.toUpperCase().contains(ext.name())) {
                 return true;
             }
         }

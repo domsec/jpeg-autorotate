@@ -105,7 +105,7 @@ class JpegImageMetadata {
     protected int getOrientation() throws JpegAutorotateException {
         TiffField field = this.rawMetadata.findEXIFValue(TiffTagConstants.TIFF_TAG_ORIENTATION);
 
-        if(field == null) {
+        if (field == null) {
             throw new JpegAutorotateException("JPEG image does not have an EXIF Orientation metadata tag.");
         }
 
@@ -159,12 +159,12 @@ class JpegImageMetadata {
      *              {@code Width} metadata is unable to be updated.
      */
     private void updateAllMetadataDimensions() throws JpegAutorotateException {
-        if(this.outputSet.findField(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH) != null || this.outputSet.findField(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH) != null) {
+        if (this.outputSet.findField(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH) != null || this.outputSet.findField(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH) != null) {
             try {
                 int height = this.rawMetadata.findEXIFValue(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH).getIntValue();
                 int width = this.rawMetadata.findEXIFValue(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH).getIntValue();
 
-                switch(this.originalOrientation) {
+                switch (this.originalOrientation) {
                     case TiffTagConstants.ORIENTATION_VALUE_MIRROR_HORIZONTAL_AND_ROTATE_270_CW:
                     case TiffTagConstants.ORIENTATION_VALUE_ROTATE_90_CW:
                     case TiffTagConstants.ORIENTATION_VALUE_MIRROR_HORIZONTAL_AND_ROTATE_90_CW:
@@ -218,7 +218,7 @@ class JpegImageMetadata {
             // TIFF RelatedImageWidth
             TagInfoShort relatedImageWidth = new TagInfoShort("RelatedImageWidth", 0x1001, TiffDirectoryType.EXIF_DIRECTORY_INTEROP_IFD);
 
-            if(this.outputSet.findField(relatedImageWidth) != null) {
+            if (this.outputSet.findField(relatedImageWidth) != null) {
                 this.outputSet.removeField(relatedImageWidth);
 
                 this.exifDirectory.add(relatedImageWidth, ((Integer) width).shortValue());
@@ -246,7 +246,7 @@ class JpegImageMetadata {
             // TIFF RelatedImageHeight
             TagInfoShort relatedImageHeight = new TagInfoShort("RelatedImageHeight", 0x1002, TiffDirectoryType.EXIF_DIRECTORY_INTEROP_IFD);
 
-            if(this.outputSet.findField(relatedImageHeight) != null) {
+            if (this.outputSet.findField(relatedImageHeight) != null) {
                 this.outputSet.removeField(relatedImageHeight);
 
                 this.exifDirectory.add(relatedImageHeight, ((Integer) height).shortValue());
@@ -265,7 +265,7 @@ class JpegImageMetadata {
     private void updateXmpXml(int height, int width) {
         String xmp = getXmpXml();
 
-        if(xmp == null) {
+        if (xmp == null) {
             return;
         }
 

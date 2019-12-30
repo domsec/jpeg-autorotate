@@ -118,7 +118,7 @@ final class JpegImageTransform {
      *              A {@code BufferedImage} containing image data.
      */
     private static void flipVertically(BufferedImage image) {
-        for(int i = 0; i < image.getHeight()/2; i++) {
+        for (int i = 0; i < image.getHeight()/2; i++) {
             int[] upperRow = image.getRGB(0, i, image.getWidth(), 1, null, 0, image.getWidth());
             int[] lowerRow = image.getRGB(0, image.getHeight() - 1 - i, image.getWidth(), 1, null, 0, image.getWidth());
 
@@ -134,8 +134,8 @@ final class JpegImageTransform {
      *              A {@code BufferedImage} containing image data.
      */
     private static void flipHorizontally(BufferedImage image) {
-        for(int i = 0; i < image.getHeight(); i++) {
-            for(int j = 0; j < image.getWidth()/2; j++) {
+        for (int i = 0; i < image.getHeight(); i++) {
+            for (int j = 0; j < image.getWidth()/2; j++) {
                 int temp = image.getRGB(j, i);
 
                 image.setRGB(j, i, image.getRGB(image.getWidth()-(1+j), i));
@@ -154,8 +154,8 @@ final class JpegImageTransform {
     private static BufferedImage rotate90CW(BufferedImage image) {
         BufferedImage tempImage = new BufferedImage(image.getHeight(), image.getWidth(), image.getType());
 
-        for(int i = 0; i < image.getHeight(); i++) {
-            for(int j = 0; j < image.getWidth(); j++) {
+        for (int i = 0; i < image.getHeight(); i++) {
+            for (int j = 0; j < image.getWidth(); j++) {
                 tempImage.setRGB(tempImage.getWidth()-1-i, j, image.getRGB(j, i));
             }
         }
@@ -173,8 +173,8 @@ final class JpegImageTransform {
     private static BufferedImage rotate90CCW(BufferedImage image) {
         BufferedImage tempImage = new BufferedImage(image.getHeight(), image.getWidth(), image.getType());
 
-        for(int i = 0; i < image.getHeight(); i++) {
-            for(int j = 0; j < image.getWidth(); j++) {
+        for (int i = 0; i < image.getHeight(); i++) {
+            for (int j = 0; j < image.getWidth(); j++) {
                 tempImage.setRGB(i, tempImage.getHeight()-1-j, image.getRGB(j, i));
             }
         }

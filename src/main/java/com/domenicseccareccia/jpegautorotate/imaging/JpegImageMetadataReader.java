@@ -53,12 +53,12 @@ final class JpegImageMetadataReader {
         try {
             org.apache.commons.imaging.common.ImageMetadata imageMetadata = Imaging.getMetadata(bytes);
 
-            if(imageMetadata == null) {
+            if (imageMetadata == null) {
                 throw new JpegAutorotateException("JPEG image does not have necessary metadata.");
             }
 
             return (org.apache.commons.imaging.formats.jpeg.JpegImageMetadata) imageMetadata;
-        } catch(IOException | ImageReadException e) {
+        } catch (IOException | ImageReadException e) {
             throw new JpegAutorotateException("Unable to read JPEG image metadata.", e);
         }
     }
@@ -73,7 +73,7 @@ final class JpegImageMetadataReader {
      *              In the event the {@code JpegImageMetadata} is unable to be read.
      */
     protected static TiffImageMetadata readExif(final org.apache.commons.imaging.formats.jpeg.JpegImageMetadata metadata) throws JpegAutorotateException {
-        if(metadata.getExif() == null) {
+        if (metadata.getExif() == null) {
             throw new JpegAutorotateException("Unable to read JPEG image EXIF metadata.");
         }
 
@@ -94,7 +94,7 @@ final class JpegImageMetadataReader {
      */
     protected static TiffOutputSet readOutputSet(final TiffImageMetadata exif) throws JpegAutorotateException{
         try {
-            if(exif.getOutputSet() == null) {
+            if (exif.getOutputSet() == null) {
                 return new TiffOutputSet();
             }
 
@@ -133,7 +133,7 @@ final class JpegImageMetadataReader {
     protected static String readXmpXml(final byte[] bytes) throws JpegAutorotateException {
       try {
           return Imaging.getXmpXml(bytes);
-      } catch(IOException | ImageReadException e) {
+      } catch (IOException | ImageReadException e) {
           throw new JpegAutorotateException("Unable to read JPEG image XMP metadata.", e);
       }
     }
