@@ -21,6 +21,7 @@
 
 package com.domenicseccareccia.jpegautorotate;
 
+import com.domenicseccareccia.jpegautorotate.*;
 import org.apache.commons.imaging.Imaging;
 import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
 import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
@@ -148,9 +149,7 @@ public class JpegAutorotateTest {
         assertTrue(() -> {
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
-                    System.out.println(originalImage.getRGB(x, y) + " = " + rotatedImage.getRGB(x, y));
                     if (originalImage.getRGB(x, y) != rotatedImage.getRGB(x, y)) {
-                    	System.out.println("FALSE" + originalImage.getRGB(x, y) + " = " + rotatedImage.getRGB(x, y));
                         return false;
                     }
                 }
