@@ -1,8 +1,8 @@
-## Contributing to JPEG Autorotate
+# Contributing to JPEG Autorotate
 
 Before digging right into code, there are a few guidelines that we need contributors to follow so that we can have a chance of keeping on top of things.
 
-### Getting Started
+## Getting Started
 
 - If you're planning to implement a new feature, it's best to create an `feature request` issue first that captures the problem you want to address. You can discuss your proposed solution in that issue. This gives a chance to provide feedback to ensure you don't waste your time on something that isn't considered to be in JPEG Autorotate's scope. Once the issue has been approved and its label is changed to `feature`, you have the go ahead to start implementation.
 - An easier way to help is to contribute images with different metadata sets for research and testing. It's best you create a `new image` issue first.
@@ -11,7 +11,7 @@ Before digging right into code, there are a few guidelines that we need contribu
     - Make sure you fill in the earliest version that you know has the issue.
 - [Fork](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) and check out your forked repository.
 
-### Making Changes
+## Making Changes
 
 - Create a new `feature branch` for your isolated work.
     - Usually you should base your branch on the `master` branch.
@@ -32,7 +32,7 @@ Before digging right into code, there are a few guidelines that we need contribu
     - Provide necessary tests for your code changes and/or image addtions, typically in `src/test/java`.
     - Make sure your changes don't break any existing tests by running `mvn test`.
 
-### Submitting Changes
+## Submitting Changes
 
 We accept contributions via Pull Requests on [Github](https://github.com/domsec/jpeg-autorotate)
 
