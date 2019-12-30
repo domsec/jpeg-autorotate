@@ -76,10 +76,10 @@ public final class JpegAutorotate {
      *              In the event the JPEG file either does not contain the
      *              appropriate {@code EXIF} metadata, is not an acceptable file type,
      *              or is unable to be read
-     * @throws NoSuchFileException
+     * @throws FileNotFoundException
      *              In the event the JPEG file does not exist.
      */
-    public static byte[] rotate(final String path) throws JpegAutorotateException, NoSuchFileException {
+    public static byte[] rotate(final String path) throws JpegAutorotateException, FileNotFoundException {
         return rotate(new File(path));
     }
 
@@ -97,16 +97,16 @@ public final class JpegAutorotate {
      *              In the event the JPEG file either does not contain the
      *              appropriate {@code EXIF} metadata, is not an acceptable file type,
      *              or is unable to be read
-     * @throws NoSuchFileException
+     * @throws FileNotFoundException
      *              In the event the JPEG file does not exist.
      */
-    public static byte[] rotate(final File file) throws JpegAutorotateException, NoSuchFileException {
+    public static byte[] rotate(final File file) throws JpegAutorotateException, FileNotFoundException {
         if(!ImageUtils.isAcceptableImage(file)) {
             throw new JpegAutorotateException("File is not compatible, must be a JPEG image.");
         }
 
         if(!file.isFile() && !file.exists()) {
-            throw new NoSuchFileException("JPEG file does not exist.");
+            throw new FileNotFoundException("JPEG file does not exist.");
         }
 
         try {
