@@ -21,7 +21,6 @@
 
 package com.domenicseccareccia.jpegautorotate;
 
-import com.domenicseccareccia.jpegautorotate.*;
 import org.apache.commons.imaging.Imaging;
 import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
 import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
