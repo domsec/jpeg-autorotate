@@ -92,4 +92,4 @@ The following icon changes were made:
 
 ## License
 
-This code is licensed under the [MIT License](LICENSE)
+This code is under the [Apache License v2](LICENSE)
