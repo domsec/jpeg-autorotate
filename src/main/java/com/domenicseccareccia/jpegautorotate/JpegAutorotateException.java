@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package com.domsec;
+package com.domenicseccareccia.jpegautorotate;
 
 /**
  * An exception class thrown upon an unexpected fatal condition during the processing of a JPEG image.

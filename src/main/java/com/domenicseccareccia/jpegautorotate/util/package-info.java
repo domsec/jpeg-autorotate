@@ -1,4 +1,4 @@
 /**
  * This package contains utility classes used by JPEG-Autorotate
  */
-package com.domsec.util;
+package com.domenicseccareccia.jpegautorotate.util;

@@ -19,10 +19,10 @@
  * under the License.
  */
 
-package com.domsec;
+package com.domenicseccareccia.jpegautorotate;
 
-import com.domsec.util.ImageUtils;
-import com.domsec.imaging.JpegImageProcessor;
+import com.domenicseccareccia.jpegautorotate.imaging.JpegImageProcessor;
+import com.domenicseccareccia.jpegautorotate.util.ImageUtils;
 
 import java.io.*;
 

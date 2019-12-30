@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package com.domsec;
+package com.domenicseccareccia.jpegautorotate;
 
 import org.apache.commons.imaging.Imaging;
 import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
@@ -41,33 +41,33 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class JpegAutorotateTest {
 
-    private static final String DIRECTORY = "src/test/samples";
-    private static final String PNG_IMAGE = "src/test/samples/blue_box.png";
-    private static final String IMAGE_DOES_NOT_EXIST = "src/test/samples/does_not_exist.jpg";
-    private static final String NO_EXIF = "src/test/samples/exif/no_exif.jpg";
-    private static final String UNKNOWN_ORIENTATION = "src/test/samples/orientation/unknown_orientation.jpg";
-    private static final String ORIENTATION_1 = "src/test/samples/orientation/orientation_1.jpg";
-    private static final String ORIENTATION_1_RESULT = "src/test/samples/orientation/result_orientation_1.jpg";
-    private static final String ORIENTATION_2 = "src/test/samples/orientation/orientation_2.jpg";
-    private static final String ORIENTATION_2_RESULT = "src/test/samples/orientation/result_orientation_2.jpg";
-    private static final String ORIENTATION_3 = "src/test/samples/orientation/orientation_3.jpg";
-    private static final String ORIENTATION_3_RESULT = "src/test/samples/orientation/result_orientation_3.jpg";
-    private static final String ORIENTATION_4 = "src/test/samples/orientation/orientation_4.jpg";
-    private static final String ORIENTATION_4_RESULT = "src/test/samples/orientation/result_orientation_4.jpg";
-    private static final String ORIENTATION_5 = "src/test/samples/orientation/orientation_5.jpg";
-    private static final String ORIENTATION_5_RESULT = "src/test/samples/orientation/result_orientation_5.jpg";
-    private static final String ORIENTATION_6 = "src/test/samples/orientation/orientation_6.jpg";
-    private static final String ORIENTATION_6_RESULT = "src/test/samples/orientation/result_orientation_6.jpg";
-    private static final String ORIENTATION_7 = "src/test/samples/orientation/orientation_7.jpg";
-    private static final String ORIENTATION_7_RESULT = "src/test/samples/orientation/result_orientation_7.jpg";
-    private static final String ORIENTATION_8 = "src/test/samples/orientation/orientation_8.jpg";
-    private static final String ORIENTATION_8_RESULT = "src/test/samples/orientation/result_orientation_8.jpg";
-    private static final String CANON_HDR = "src/test/samples/exif/canon_hdr.jpg";
-    private static final String CANON_HDR_RESULT = "src/test/samples/exif/result_canon_hdr.jpg";
-    private static final String IPHONE_GPS = "src/test/samples/exif/iphone_gps.jpg";
-    private static final String IPHONE_GPS_RESULT = "src/test/samples/exif/result_iphone_gps.jpg";
-    private static final String NIKON_XMP = "src/test/samples/exif/nikon_xmp.jpg";
-    private static final String NIKON_XMP_RESULT = "src/test/samples/exif/result_nikon_xmp.jpg";
+    private static final String DIRECTORY = "src/test/resources";
+    private static final String PNG_IMAGE = "src/test/resources/blue_box.png";
+    private static final String IMAGE_DOES_NOT_EXIST = "src/test/resources/does_not_exist.jpg";
+    private static final String NO_EXIF = "src/test/resources/exif/no_exif.jpg";
+    private static final String UNKNOWN_ORIENTATION = "src/test/resources/orientation/unknown_orientation.jpg";
+    private static final String ORIENTATION_1 = "src/test/resources/orientation/orientation_1.jpg";
+    private static final String ORIENTATION_1_RESULT = "src/test/resources/orientation/result_orientation_1.jpg";
+    private static final String ORIENTATION_2 = "src/test/resources/orientation/orientation_2.jpg";
+    private static final String ORIENTATION_2_RESULT = "src/test/resources/orientation/result_orientation_2.jpg";
+    private static final String ORIENTATION_3 = "src/test/resources/orientation/orientation_3.jpg";
+    private static final String ORIENTATION_3_RESULT = "src/test/resources/orientation/result_orientation_3.jpg";
+    private static final String ORIENTATION_4 = "src/test/resources/orientation/orientation_4.jpg";
+    private static final String ORIENTATION_4_RESULT = "src/test/resources/orientation/result_orientation_4.jpg";
+    private static final String ORIENTATION_5 = "src/test/resources/orientation/orientation_5.jpg";
+    private static final String ORIENTATION_5_RESULT = "src/test/resources/orientation/result_orientation_5.jpg";
+    private static final String ORIENTATION_6 = "src/test/resources/orientation/orientation_6.jpg";
+    private static final String ORIENTATION_6_RESULT = "src/test/resources/orientation/result_orientation_6.jpg";
+    private static final String ORIENTATION_7 = "src/test/resources/orientation/orientation_7.jpg";
+    private static final String ORIENTATION_7_RESULT = "src/test/resources/orientation/result_orientation_7.jpg";
+    private static final String ORIENTATION_8 = "src/test/resources/orientation/orientation_8.jpg";
+    private static final String ORIENTATION_8_RESULT = "src/test/resources/orientation/result_orientation_8.jpg";
+    private static final String CANON_HDR = "src/test/resources/exif/canon_hdr.jpg";
+    private static final String CANON_HDR_RESULT = "src/test/resources/exif/result_canon_hdr.jpg";
+    private static final String IPHONE_GPS = "src/test/resources/exif/iphone_gps.jpg";
+    private static final String IPHONE_GPS_RESULT = "src/test/resources/exif/result_iphone_gps.jpg";
+    private static final String NIKON_XMP = "src/test/resources/exif/nikon_xmp.jpg";
+    private static final String NIKON_XMP_RESULT = "src/test/resources/exif/result_nikon_xmp.jpg";
 
     @Test
     public void testRotateExceptions() {
@@ -77,7 +77,7 @@ public class JpegAutorotateTest {
         assertThrows(JpegAutorotateException.class, () -> JpegAutorotate.rotate(DIRECTORY));
         assertThrows(FileNotFoundException.class, () -> JpegAutorotate.rotate(new FileInputStream(new File(DIRECTORY))));
 
-        assertThrows(JpegAutorotateException.class, () -> JpegAutorotate.rotate(IMAGE_DOES_NOT_EXIST));
+        assertThrows(FileNotFoundException.class, () -> JpegAutorotate.rotate(IMAGE_DOES_NOT_EXIST));
         assertThrows(FileNotFoundException.class, () -> JpegAutorotate.rotate(new FileInputStream(new File(IMAGE_DOES_NOT_EXIST))));
     }
 

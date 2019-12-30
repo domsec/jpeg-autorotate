@@ -19,9 +19,9 @@
  * under the License.
  */
 
-package com.domsec.imaging;
+package com.domenicseccareccia.jpegautorotate.imaging;
 
-import com.domsec.JpegAutorotateException;
+import com.domenicseccareccia.jpegautorotate.JpegAutorotateException;
 import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.ImageWriteException;
 import org.apache.commons.imaging.Imaging;

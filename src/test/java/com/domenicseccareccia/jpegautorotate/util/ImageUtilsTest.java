@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package com.domsec.util;
+package com.domenicseccareccia.jpegautorotate.util;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
@@ -32,8 +32,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ImageUtilsTest {
 
-    private static final String JPEG_IMAGE = "src/test/samples/red_box.jpg";
-    private static final String PNG_IMAGE = "src/test/samples/blue_box.png";
+    private static final String JPEG_IMAGE = "src/test/resources/red_box.jpg";
+    private static final String PNG_IMAGE = "src/test/resources/blue_box.png";
 
     @Test
     public void testAcceptableImage() throws Exception {

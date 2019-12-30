@@ -18,9 +18,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.domsec.util;
+package com.domenicseccareccia.jpegautorotate.util;
 
-import com.domsec.JpegAutorotateException;
+import com.domenicseccareccia.jpegautorotate.JpegAutorotateException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
