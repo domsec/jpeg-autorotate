@@ -4,6 +4,7 @@ import com.domsec.util.ImageUtils;
 import com.domsec.imaging.JpegImageProcessor;
 
 import java.io.*;
+import java.nio.file.NoSuchFileException;
 
 /**
  * Rotates JPEG images based on EXIF Orientation metadata tag.
@@ -74,9 +75,11 @@ public final class JpegAutorotate {
      * @throws JpegAutorotateException
      *              In the event the JPEG file either does not contain the
      *              appropriate {@code EXIF} metadata, is not an acceptable file type,
-     *              is unable to be read, or does not exist.
+     *              or is unable to be read
+     * @throws NoSuchFileException
+     *              In the event the JPEG file does not exist.
      */
-    public static byte[] rotate(final String path) throws JpegAutorotateException {
+    public static byte[] rotate(final String path) throws JpegAutorotateException, NoSuchFileException {
         return rotate(new File(path));
     }
 
@@ -93,15 +96,17 @@ public final class JpegAutorotate {
      * @throws JpegAutorotateException
      *              In the event the JPEG file either does not contain the
      *              appropriate {@code EXIF} metadata, is not an acceptable file type,
-     *              is unable to be read, or does not exist.
+     *              or is unable to be read
+     * @throws NoSuchFileException
+     *              In the event the JPEG file does not exist.
      */
-    public static byte[] rotate(final File file) throws JpegAutorotateException {
+    public static byte[] rotate(final File file) throws JpegAutorotateException, NoSuchFileException {
         if(!ImageUtils.isAcceptableImage(file)) {
             throw new JpegAutorotateException("File is not compatible, must be a JPEG image.");
         }
 
         if(!file.isFile() && !file.exists()) {
-            throw new JpegAutorotateException("JPEG file does not exist.");
+            throw new NoSuchFileException("JPEG file does not exist.");
         }
 
         try {
