@@ -92,4 +92,4 @@ The following icon changes were made:
 
 ## License
 
-TODO
+This code is licensed under the [MIT License](LICENSE)
