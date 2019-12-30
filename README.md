@@ -64,7 +64,9 @@ The library throws the following exceptions:
 
 ## Contributing
 
-TODO
+Contributions are welcome and will be fully **credited**.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for information on how to contribute to JPEG Autorotate.
 
 ## Credits
 
