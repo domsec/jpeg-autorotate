@@ -17,23 +17,17 @@
 # specific language governing permissions and limitations
 # under the License.
  
- language: java
+language: java
 
 jdk: 
-  - oraclejdk8
-  - oraclejdk9
-  - oraclejdk10
   - oraclejdk11
-  - oraclejdk12
-  - oraclejdk13
   - openjdk8
-  - openjdk9
-  - openjdk10
   - openjdk11
   - openjdk12
   - openjdk13
+  - openjdk-ea
 
-install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true
+install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
 
 script:
-  - mvn clean test -Dgpg.skip=true
+  - mvn clean verify -Dgpg.skip=true
