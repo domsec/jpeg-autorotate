@@ -42,7 +42,6 @@ import java.io.*;
  * <li>Retains and does not alter other metadata tags</li>
  * <li>Currently does not support updating MakerNotes metadata</li>
  * </ul>
- * </p>
  * <p>
  * <dl>
  * <dt><b>Usage:</b></dt>
@@ -50,7 +49,6 @@ import java.io.*;
  * The following example code demonstrates how to use the library to load a JPEG image by
  * either passing a {@code String} file path, {@code File} or {@code InputStream}, apply rotation,
  * update metadata and return the image as {@code byte[]}.
- * </p>
  * <p>
  * <pre>
  *      // File path
@@ -68,13 +66,11 @@ import java.io.*;
  * </pre>
  * </dd>
  * </dl>
- * </p>
  * <p>
  * More information on the EXIF metadata is available at:
  *      https://www.daveperrett.com/articles/2012/07/28/exif-orientation-handling-is-a-ghetto/
  *      https://exiftool.org/TagNames/
  *      https://www.exiv2.org/tags.html
- * </p>
  * <p>
  * More information about this project is available at:
  *      https://github.com/domsec/jpeg-autorotate
