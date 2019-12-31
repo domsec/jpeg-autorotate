@@ -33,7 +33,7 @@ jdk:
   - openjdk12
   - openjdk13
 
-install: mvn install -DskipTests=true -Dgpg.skip=true
+install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
 script:
   - mvn clean test -Dgpg.skip=true
