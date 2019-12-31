@@ -40,7 +40,7 @@ Applies the right orientation to a JPEG image, based on its EXIF tag. More preci
 
 *Requires Java 8 or later*
 
-You can download source from the [releases page](TODO)
+You can download source from the [releases page](https://github.com/domsec/jpeg-autorotate/releases)
 
 Alternatively, you can install the library via its [Maven package](https://search.maven.org/search?q=g:com.domenicseccareccia%20AND%20a:jpeg-autorotate)
 
