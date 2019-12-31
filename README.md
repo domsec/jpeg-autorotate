@@ -48,7 +48,7 @@ Alternatively, you can install the library via its [Maven package](https://searc
 <dependency>
     <groupId>com.domenicseccareccia</groupId>
     <artifactId>jpeg-autorotate</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
