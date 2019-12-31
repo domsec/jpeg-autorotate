@@ -7,21 +7,22 @@ assignees: ''
 
 ---
 
+- JPEG Autorotate Version: [e.g. 1.0.0]
+- Java Version: [e.g. 8]
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
-**JPEG Image Files**
-Add jpeg image files causing the error when processed with the library.
+**JPEG image files**
+If applicable, add jpeg image files causing the error when processed with JPEG Autorotate.
 
 **Screenshots**
 If applicable, add screenshots (preferably from https://exifinfo.org/ when bug relates to metadata) to help explain your problem.
 
-**Desktop (please complete the following information):**
- - OS: [e.g. Windows]
- - Version [e.g. 22]
+
 
 **Additional context**
 Add any other context about the problem here.
