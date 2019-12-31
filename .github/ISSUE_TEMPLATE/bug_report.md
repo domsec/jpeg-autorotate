@@ -17,7 +17,7 @@ A clear and concise description of what you expected to happen.
 Add jpeg image files causing the error when processed with the library.
 
 **Screenshots**
-If applicable, add screenshots to help explain your problem.
+If applicable, add screenshots (preferably from https://exifinfo.org/ when bug relates to metadata) to help explain your problem.
 
 **Desktop (please complete the following information):**
  - OS: [e.g. Windows]
