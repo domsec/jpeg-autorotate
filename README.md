@@ -1,8 +1,8 @@
 ![Logo](logo.png)
 
 [![Build Status](https://travis-ci.com/domsec/jpeg-autorotate.svg?token=c6xYTBupNRzyRLh2QynN&branch=master)](https://travis-ci.com/domsec/jpeg-autorotate)
-![Maven Central with version prefix filter](https://img.shields.io/maven-central/v/com.domenicseccareccia/jpeg-autorotate/1.0.0)
-[![javadoc](https://javadoc.io/badge2/com.domenicseccareccia/jpeg-autorotate/1.0.0/javadoc.svg)](https://javadoc.io/doc/com.domenicseccareccia/jpeg-autorotate/1.0.0)
+![Maven Central with version prefix filter](https://img.shields.io/maven-central/v/com.domenicseccareccia/jpeg-autorotate/1.0.1)
+[![javadoc](https://javadoc.io/badge2/com.domenicseccareccia/jpeg-autorotate/1.0.1/javadoc.svg)](https://javadoc.io/doc/com.domenicseccareccia/jpeg-autorotate/1.0.1)
 
 JPEG Autorotate is a Java library to rotate JPEG images based on EXIF orientation.
 
@@ -48,7 +48,7 @@ Alternatively, you can install the library via its [Maven package](https://searc
 <dependency>
     <groupId>com.domenicseccareccia</groupId>
     <artifactId>jpeg-autorotate</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
