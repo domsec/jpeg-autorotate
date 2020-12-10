@@ -133,8 +133,8 @@ public class JpegAutorotateTest {
         byte[] rotatedImageBytes = JpegAutorotate.rotate(new FileInputStream(new File(originalImagePath)));
         File tempFile = File.createTempFile("tmp", ".jpg");
         FileOutputStream fos = new FileOutputStream(tempFile);
-        fos.write(rotatedImageBytes);
 
+        fos.write(rotatedImageBytes);
         fos.flush();
         fos.close();
 
@@ -174,10 +174,11 @@ public class JpegAutorotateTest {
         byte[] rotatedImageBytes = JpegAutorotate.rotate(originalImagePath);
         File tempFile = File.createTempFile("tmp", ".jpg");
         FileOutputStream fos = new FileOutputStream(tempFile);
-        fos.write(rotatedImageBytes);
 
+        fos.write(rotatedImageBytes);
         fos.flush();
         fos.close();
+
         BufferedImage rotatedImage = ImageIO.read(tempFile);
         tempFile.delete();
 

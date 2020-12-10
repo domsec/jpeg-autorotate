@@ -49,14 +49,13 @@ final class JpegImageReader {
         try {
             File tempFile = File.createTempFile("tmp", ".jpg");
             FileOutputStream fos = new FileOutputStream(tempFile);
+
             fos.write(bytes);
-
-            BufferedImage image = ImageIO.read(tempFile);
-
             fos.flush();
             fos.close();
-            tempFile.delete();
 
+            BufferedImage image = ImageIO.read(tempFile);
+            tempFile.delete();
             return image;
         } catch (IOException e) {
             throw new JpegAutorotateException("Unable to read JPEG image.", e);
