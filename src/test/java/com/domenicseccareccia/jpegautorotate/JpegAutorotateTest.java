@@ -131,16 +131,16 @@ public class JpegAutorotateTest {
 
     private void testRotateAndFlipImage(String originalImagePath, String resultImagePath) throws Exception {
         byte[] rotatedImageBytes = JpegAutorotate.rotate(new FileInputStream(new File(originalImagePath)));
-        File tempFile = File.createTempFile("tmp", "jpg");
+        File tempFile = File.createTempFile("tmp", ".jpg");
         FileOutputStream fos = new FileOutputStream(tempFile);
-        fos.write(rotatedImageBytes);
 
-        tempFile.deleteOnExit();
+        fos.write(rotatedImageBytes);
         fos.flush();
         fos.close();
 
         BufferedImage originalImage = ImageIO.read(new File(resultImagePath));
         BufferedImage rotatedImage = ImageIO.read(tempFile);
+        tempFile.delete();
 
         int width  = originalImage.getWidth();
         int height = originalImage.getHeight();
@@ -172,15 +172,16 @@ public class JpegAutorotateTest {
 
         // Initialize rotated image
         byte[] rotatedImageBytes = JpegAutorotate.rotate(originalImagePath);
-        File tempFile = File.createTempFile("tmp", "jpg");
+        File tempFile = File.createTempFile("tmp", ".jpg");
         FileOutputStream fos = new FileOutputStream(tempFile);
-        fos.write(rotatedImageBytes);
 
-        tempFile.deleteOnExit();
+        fos.write(rotatedImageBytes);
         fos.flush();
         fos.close();
 
         BufferedImage rotatedImage = ImageIO.read(tempFile);
+        tempFile.delete();
+
         JpegImageMetadata rotatedImageMetadata = (org.apache.commons.imaging.formats.jpeg.JpegImageMetadata) Imaging.getMetadata(rotatedImageBytes);
         TiffOutputSet rotatedImageOutputSet = rotatedImageMetadata.getExif().getOutputSet();
 

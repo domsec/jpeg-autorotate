@@ -47,16 +47,15 @@ final class JpegImageReader {
      */
     protected static BufferedImage readImage(final byte[] bytes) throws JpegAutorotateException {
         try {
-            File tempFile = File.createTempFile("tmp", "jpg");
+            File tempFile = File.createTempFile("tmp", ".jpg");
             FileOutputStream fos = new FileOutputStream(tempFile);
+
             fos.write(bytes);
-
-            BufferedImage image = ImageIO.read(tempFile);
-
             fos.flush();
             fos.close();
-            tempFile.deleteOnExit();
 
+            BufferedImage image = ImageIO.read(tempFile);
+            tempFile.delete();
             return image;
         } catch (IOException e) {
             throw new JpegAutorotateException("Unable to read JPEG image.", e);
