@@ -26,7 +26,6 @@ import com.domenicseccareccia.jpegautorotate.JpegAutorotateException;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.file.Files;
 
 final class JpegImageReader {
 
@@ -47,18 +46,8 @@ final class JpegImageReader {
      *              In the event the {@code bytes} is unable to be read.
      */
     protected static BufferedImage readImage(final byte[] bytes) throws JpegAutorotateException {
-        try {
-            File tempFile = File.createTempFile("tmp", ".jpg");
-
-            try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-                fos.write(bytes);
-                fos.flush();
-            }
-
-            BufferedImage image = ImageIO.read(tempFile);
-            tempFile.delete();
-
-            return image;
+        try (InputStream is = new ByteArrayInputStream(bytes)) {
+            return ImageIO.read(is);
         } catch (IOException e) {
             throw new JpegAutorotateException("Unable to read JPEG image.", e);
         }
