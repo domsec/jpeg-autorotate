@@ -125,8 +125,8 @@ public final class JpegAutorotate {
             throw new FileNotFoundException("JPEG file does not exist.");
         }
 
-        try {
-            byte[] bytes = ImageUtils.writeImageToBytes(new FileInputStream(file));
+        try (InputStream is = new FileInputStream(file)) {
+            byte[] bytes = ImageUtils.writeImageToBytes(is);
 
             return JpegImageProcessor.process(bytes);
         } catch (IOException e) {

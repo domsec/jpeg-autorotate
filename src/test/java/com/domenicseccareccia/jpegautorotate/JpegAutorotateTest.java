@@ -35,6 +35,8 @@ import org.junit.jupiter.api.Test;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -70,27 +72,43 @@ public class JpegAutorotateTest {
     private static final String NIKON_XMP_RESULT = "src/test/resources/exif/result_nikon_xmp.jpg";
 
     @Test
-    public void testRotateExceptions() {
+    public void testRotateExceptions() throws Exception{
         assertThrows(JpegAutorotateException.class, () -> JpegAutorotate.rotate(PNG_IMAGE));
-        assertThrows(JpegAutorotateException.class, () -> JpegAutorotate.rotate(new FileInputStream(new File(PNG_IMAGE))));
+        try (InputStream is = new FileInputStream(PNG_IMAGE)) {
+            assertThrows(JpegAutorotateException.class, () -> JpegAutorotate.rotate(is));
+        }
 
         assertThrows(JpegAutorotateException.class, () -> JpegAutorotate.rotate(DIRECTORY));
-        assertThrows(FileNotFoundException.class, () -> JpegAutorotate.rotate(new FileInputStream(new File(DIRECTORY))));
+        assertThrows(FileNotFoundException.class, () -> {
+            try (InputStream is = new FileInputStream(DIRECTORY)) {
+                JpegAutorotate.rotate(is);
+            }
+        });
 
         assertThrows(FileNotFoundException.class, () -> JpegAutorotate.rotate(IMAGE_DOES_NOT_EXIST));
-        assertThrows(FileNotFoundException.class, () -> JpegAutorotate.rotate(new FileInputStream(new File(IMAGE_DOES_NOT_EXIST))));
+        assertThrows(FileNotFoundException.class, () -> {
+            try (InputStream is = new FileInputStream(IMAGE_DOES_NOT_EXIST)) {
+                JpegAutorotate.rotate(is);
+            }
+        });
     }
 
     @Test
-    public void testRotateNoExif() {
+    public void testRotateNoExif() throws Exception {
         assertThrows(JpegAutorotateException.class, () -> JpegAutorotate.rotate(NO_EXIF));
-        assertThrows(JpegAutorotateException.class, () -> JpegAutorotate.rotate(new FileInputStream(new File(NO_EXIF))));
+
+        try (InputStream is = new FileInputStream(NO_EXIF)) {
+            assertThrows(JpegAutorotateException.class, () -> JpegAutorotate.rotate(is));
+        }
     }
 
     @Test
-    public void testRotateUnknownOrientation() {
+    public void testRotateUnknownOrientation() throws Exception {
         assertThrows(JpegAutorotateException.class, () -> JpegAutorotate.rotate(UNKNOWN_ORIENTATION));
-        assertThrows(JpegAutorotateException.class, () -> JpegAutorotate.rotate(new FileInputStream(new File(UNKNOWN_ORIENTATION))));
+
+        try (InputStream is = new FileInputStream(UNKNOWN_ORIENTATION)) {
+            assertThrows(JpegAutorotateException.class, () -> JpegAutorotate.rotate(is));
+        }
     }
 
     @Test
@@ -130,19 +148,24 @@ public class JpegAutorotateTest {
     }
 
     private void testRotateAndFlipImage(String originalImagePath, String resultImagePath) throws Exception {
-        byte[] rotatedImageBytes = JpegAutorotate.rotate(new FileInputStream(new File(originalImagePath)));
-        File tempFile = File.createTempFile("tmp", ".jpg");
-        FileOutputStream fos = new FileOutputStream(tempFile);
+        byte[] rotatedImageBytes;
 
-        fos.write(rotatedImageBytes);
-        fos.flush();
-        fos.close();
+        try (InputStream is = new FileInputStream(originalImagePath)) {
+            rotatedImageBytes = JpegAutorotate.rotate(is);
+        }
+
+        File tempFile = File.createTempFile("tmp", ".jpg");
+
+        try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+            fos.write(rotatedImageBytes);
+            fos.flush();
+        }
 
         BufferedImage originalImage = ImageIO.read(new File(resultImagePath));
         BufferedImage rotatedImage = ImageIO.read(tempFile);
         tempFile.delete();
 
-        int width  = originalImage.getWidth();
+        int width = originalImage.getWidth();
         int height = originalImage.getHeight();
 
         assertTrue(() -> {
@@ -160,7 +183,7 @@ public class JpegAutorotateTest {
 
     private void testMetadata(String originalImagePath) throws Exception {
         // Initialize Original Image
-        InputStream is = new FileInputStream(new File(originalImagePath));
+        InputStream is = new FileInputStream(originalImagePath);
         byte[] originalImageBytes = IOUtils.toByteArray(is);
 
         is.close();
@@ -173,11 +196,11 @@ public class JpegAutorotateTest {
         // Initialize rotated image
         byte[] rotatedImageBytes = JpegAutorotate.rotate(originalImagePath);
         File tempFile = File.createTempFile("tmp", ".jpg");
-        FileOutputStream fos = new FileOutputStream(tempFile);
 
-        fos.write(rotatedImageBytes);
-        fos.flush();
-        fos.close();
+        try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+            fos.write(rotatedImageBytes);
+            fos.flush();
+        }
 
         BufferedImage rotatedImage = ImageIO.read(tempFile);
         tempFile.delete();

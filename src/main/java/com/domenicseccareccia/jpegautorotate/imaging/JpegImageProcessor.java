@@ -158,14 +158,11 @@ public final class JpegImageProcessor {
      *              to a {@code byte[]}.
      */
     private static byte[] writeThumbnail(JpegImageMetadata metadata) throws JpegAutorotateException {
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             ImageIO.write(metadata.getThumbnail(), "jpeg", baos);
             baos.flush();
-            byte[] bytes = baos.toByteArray();
-            baos.close();
 
-            return bytes;
+            return baos.toByteArray();
         } catch (IOException e) {
             throw new JpegAutorotateException("Unable to update JPEG image thumbnail.", e);
         }
@@ -187,22 +184,18 @@ public final class JpegImageProcessor {
      *              to a {@code byte[]}.
      */
     private static byte[] writeImage(JpegImage image) throws JpegAutorotateException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-        try {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             ImageIO.write(image.getImage(), "jpeg", baos);
             byte [] data = baos.toByteArray();
             baos.reset();
 
             // Update JPEG image metadata
-            baos = new ByteArrayOutputStream();
             new ExifRewriter().updateExifMetadataLossless(data, baos, image.getMetadata().getOutputSet());
             data = baos.toByteArray();
             baos.reset();
 
             // Update IPTC/Photoshop metadata
             if (image.getMetadata().getPhotoshop() != null) {
-                baos = new ByteArrayOutputStream();
                 new JpegIptcRewriter().writeIPTC(data, baos, image.getMetadata().getPhotoshop().photoshopApp13Data);
                 data = baos.toByteArray();
                 baos.reset();
@@ -210,13 +203,9 @@ public final class JpegImageProcessor {
 
             // Update XMP metadata
             if (image.getMetadata().getXmpXml() != null) {
-                baos = new ByteArrayOutputStream();
                 new JpegXmpRewriter().updateXmpXml(data, baos, image.getMetadata().getXmpXml());
                 data = baos.toByteArray();
-                baos.reset();
             }
-
-            baos.close();
 
             return data;
         } catch (ImageWriteException | ImageReadException | IOException e) {
