@@ -41,7 +41,7 @@ public class ImageUtilsTest {
         assertTrue(ImageUtils.isAcceptableImage(new File(JPEG_IMAGE)));
 
         try (InputStream is = new FileInputStream(JPEG_IMAGE)) {
-            byte[] bytes = ImageUtils.writeImageToBytes(is);
+            byte[] bytes = ImageUtils.toByteArray(is);
 
             assertTrue(ImageUtils.isAcceptableImage(bytes));
         }
@@ -50,20 +50,9 @@ public class ImageUtilsTest {
         assertFalse(ImageUtils.isAcceptableImage(new File(PNG_IMAGE)));
 
         try (InputStream is = new FileInputStream(PNG_IMAGE)) {
-            byte[] bytes = ImageUtils.writeImageToBytes(is);
+            byte[] bytes = ImageUtils.toByteArray(is);
 
             assertFalse(ImageUtils.isAcceptableImage(bytes));
-        }
-    }
-
-    @Test
-    public void testWriteImageToBytes() throws Exception {
-        // JPEG Image
-        try (InputStream is = new FileInputStream(JPEG_IMAGE);
-             InputStream is2 = new FileInputStream(JPEG_IMAGE)) {
-            byte[] expectedBytes = IOUtils.toByteArray(is);
-
-            assertArrayEquals(expectedBytes, ImageUtils.writeImageToBytes(is2));
         }
     }
 

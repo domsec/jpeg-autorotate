@@ -126,7 +126,7 @@ public final class JpegAutorotate {
         }
 
         try (InputStream is = new FileInputStream(file)) {
-            byte[] bytes = ImageUtils.writeImageToBytes(is);
+            byte[] bytes = ImageUtils.toByteArray(is);
 
             return JpegImageProcessor.process(bytes);
         } catch (IOException e) {
@@ -150,7 +150,7 @@ public final class JpegAutorotate {
      *              is unable to be read, or does not exist.
      */
     public static byte[] rotate(final InputStream inputStream) throws JpegAutorotateException {
-        byte[] bytes = ImageUtils.writeImageToBytes(inputStream);
+        byte[] bytes = ImageUtils.toByteArray(inputStream);
 
         if (!ImageUtils.isAcceptableImage(bytes)) {
             throw new JpegAutorotateException("InputStream file is not compatible, must be a JPEG image.");

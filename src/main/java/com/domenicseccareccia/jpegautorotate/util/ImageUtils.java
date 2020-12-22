@@ -89,7 +89,7 @@ public final class ImageUtils {
      *              In the event the {@code InputStream} is unable to be read or write
      *              to a {@code byte[]}.
      */
-    public static byte[] writeImageToBytes(final InputStream is) throws JpegAutorotateException {
+    public static byte[] toByteArray(final InputStream is) throws JpegAutorotateException {
         try {
             return IOUtils.toByteArray(is);
         } catch (IOException e) {
