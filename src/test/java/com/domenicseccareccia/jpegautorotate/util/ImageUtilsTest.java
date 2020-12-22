@@ -38,21 +38,21 @@ public class ImageUtilsTest {
     @Test
     public void testAcceptableImage() throws Exception {
         // JPEG Image
-        assertTrue(ImageUtils.isAcceptableImage(new File(JPEG_IMAGE)));
+        assertTrue(ImageUtils.isJpeg(new File(JPEG_IMAGE)));
 
         try (InputStream is = new FileInputStream(JPEG_IMAGE)) {
             byte[] bytes = ImageUtils.toByteArray(is);
 
-            assertTrue(ImageUtils.isAcceptableImage(bytes));
+            assertTrue(ImageUtils.isJpeg(bytes));
         }
 
         // PNG Image
-        assertFalse(ImageUtils.isAcceptableImage(new File(PNG_IMAGE)));
+        assertFalse(ImageUtils.isJpeg(new File(PNG_IMAGE)));
 
         try (InputStream is = new FileInputStream(PNG_IMAGE)) {
             byte[] bytes = ImageUtils.toByteArray(is);
 
-            assertFalse(ImageUtils.isAcceptableImage(bytes));
+            assertFalse(ImageUtils.isJpeg(bytes));
         }
     }
 

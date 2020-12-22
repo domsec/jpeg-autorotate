@@ -117,7 +117,7 @@ public final class JpegAutorotate {
      *              In the event the JPEG file does not exist.
      */
     public static byte[] rotate(final File file) throws JpegAutorotateException, FileNotFoundException {
-        if (!ImageUtils.isAcceptableImage(file)) {
+        if (!ImageUtils.isJpeg(file)) {
             throw new JpegAutorotateException("File is not compatible, must be a JPEG image.");
         }
 
@@ -152,7 +152,7 @@ public final class JpegAutorotate {
     public static byte[] rotate(final InputStream inputStream) throws JpegAutorotateException {
         byte[] bytes = ImageUtils.toByteArray(inputStream);
 
-        if (!ImageUtils.isAcceptableImage(bytes)) {
+        if (!ImageUtils.isJpeg(bytes)) {
             throw new JpegAutorotateException("InputStream file is not compatible, must be a JPEG image.");
         }
 
