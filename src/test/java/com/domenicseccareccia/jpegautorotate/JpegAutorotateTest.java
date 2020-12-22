@@ -35,8 +35,6 @@ import org.junit.jupiter.api.Test;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -154,16 +152,11 @@ public class JpegAutorotateTest {
             rotatedImageBytes = JpegAutorotate.rotate(is);
         }
 
-        File tempFile = File.createTempFile("tmp", ".jpg");
-
-        try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-            fos.write(rotatedImageBytes);
-            fos.flush();
-        }
-
         BufferedImage originalImage = ImageIO.read(new File(resultImagePath));
-        BufferedImage rotatedImage = ImageIO.read(tempFile);
-        tempFile.delete();
+        BufferedImage rotatedImage;
+        try (InputStream is = new ByteArrayInputStream(rotatedImageBytes)) {
+            rotatedImage = ImageIO.read(is);
+        }
 
         int width = originalImage.getWidth();
         int height = originalImage.getHeight();
@@ -183,10 +176,10 @@ public class JpegAutorotateTest {
 
     private void testMetadata(String originalImagePath) throws Exception {
         // Initialize Original Image
-        InputStream is = new FileInputStream(originalImagePath);
-        byte[] originalImageBytes = IOUtils.toByteArray(is);
-
-        is.close();
+        byte[] originalImageBytes;
+        try (InputStream is = new FileInputStream(originalImagePath)) {
+            originalImageBytes = IOUtils.toByteArray(is);
+        }
 
         BufferedImage originalImage = ImageIO.read(new File(originalImagePath));
         JpegImageMetadata originalImageMetadata = (org.apache.commons.imaging.formats.jpeg.JpegImageMetadata) Imaging.getMetadata(originalImageBytes);
@@ -195,15 +188,10 @@ public class JpegAutorotateTest {
 
         // Initialize rotated image
         byte[] rotatedImageBytes = JpegAutorotate.rotate(originalImagePath);
-        File tempFile = File.createTempFile("tmp", ".jpg");
-
-        try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-            fos.write(rotatedImageBytes);
-            fos.flush();
+        BufferedImage rotatedImage;
+        try (InputStream is = new ByteArrayInputStream(rotatedImageBytes)) {
+            rotatedImage = ImageIO.read(is);
         }
-
-        BufferedImage rotatedImage = ImageIO.read(tempFile);
-        tempFile.delete();
 
         JpegImageMetadata rotatedImageMetadata = (org.apache.commons.imaging.formats.jpeg.JpegImageMetadata) Imaging.getMetadata(rotatedImageBytes);
         TiffOutputSet rotatedImageOutputSet = rotatedImageMetadata.getExif().getOutputSet();
