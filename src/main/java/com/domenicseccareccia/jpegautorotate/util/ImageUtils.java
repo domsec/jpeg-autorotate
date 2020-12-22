@@ -90,10 +90,8 @@ public final class ImageUtils {
      *              to a {@code byte[]}.
      */
     public static byte[] writeImageToBytes(final InputStream is) throws JpegAutorotateException {
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            IOUtils.copy(is, baos);
-
-            return baos.toByteArray();
+        try {
+            return IOUtils.toByteArray(is);
         } catch (IOException e) {
             throw new JpegAutorotateException("Unable to read/write InputStream containing JPEG image data to a byte array.", e);
         }
