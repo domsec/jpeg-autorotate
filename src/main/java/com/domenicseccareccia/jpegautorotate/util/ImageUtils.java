@@ -70,8 +70,8 @@ public final class ImageUtils {
      *              In the event the image file type is unable to be determined.
      */
     public static boolean isAcceptableImage(final byte[] bytes) throws JpegAutorotateException {
-        try {
-            String contentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(bytes));
+        try (InputStream is = new ByteArrayInputStream(bytes)) {
+            String contentType = URLConnection.guessContentTypeFromStream(is);
 
             return FILENAME_FILTER.accept(null, contentType);
         } catch (IOException e) {
@@ -91,11 +91,7 @@ public final class ImageUtils {
      */
     public static byte[] writeImageToBytes(final InputStream is) throws JpegAutorotateException {
         try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-            IOUtils.copy(is, baos);
-
-            return baos.toByteArray();
+            return IOUtils.toByteArray(is);
         } catch (IOException e) {
             throw new JpegAutorotateException("Unable to read/write InputStream containing JPEG image data to a byte array.", e);
         }
