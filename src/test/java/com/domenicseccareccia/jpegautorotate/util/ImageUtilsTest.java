@@ -21,7 +21,6 @@
 
 package com.domenicseccareccia.jpegautorotate.util;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -36,7 +35,7 @@ public class ImageUtilsTest {
     private static final String PNG_IMAGE = "src/test/resources/blue_box.png";
 
     @Test
-    public void testAcceptableImage() throws Exception {
+    public void testIsJpeg() throws Exception {
         // JPEG Image
         assertTrue(ImageUtils.isJpeg(new File(JPEG_IMAGE)));
 
