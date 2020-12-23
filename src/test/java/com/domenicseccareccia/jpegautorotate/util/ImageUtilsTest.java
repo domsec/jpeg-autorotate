@@ -21,7 +21,6 @@
 
 package com.domenicseccareccia.jpegautorotate.util;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -36,34 +35,23 @@ public class ImageUtilsTest {
     private static final String PNG_IMAGE = "src/test/resources/blue_box.png";
 
     @Test
-    public void testAcceptableImage() throws Exception {
+    public void testIsJpeg() throws Exception {
         // JPEG Image
-        assertTrue(ImageUtils.isAcceptableImage(new File(JPEG_IMAGE)));
+        assertTrue(ImageUtils.isJpeg(new File(JPEG_IMAGE)));
 
         try (InputStream is = new FileInputStream(JPEG_IMAGE)) {
-            byte[] bytes = ImageUtils.writeImageToBytes(is);
+            byte[] bytes = ImageUtils.toByteArray(is);
 
-            assertTrue(ImageUtils.isAcceptableImage(bytes));
+            assertTrue(ImageUtils.isJpeg(bytes));
         }
 
         // PNG Image
-        assertFalse(ImageUtils.isAcceptableImage(new File(PNG_IMAGE)));
+        assertFalse(ImageUtils.isJpeg(new File(PNG_IMAGE)));
 
         try (InputStream is = new FileInputStream(PNG_IMAGE)) {
-            byte[] bytes = ImageUtils.writeImageToBytes(is);
+            byte[] bytes = ImageUtils.toByteArray(is);
 
-            assertFalse(ImageUtils.isAcceptableImage(bytes));
-        }
-    }
-
-    @Test
-    public void testWriteImageToBytes() throws Exception {
-        // JPEG Image
-        try (InputStream is = new FileInputStream(JPEG_IMAGE);
-             InputStream is2 = new FileInputStream(JPEG_IMAGE)) {
-            byte[] expectedBytes = IOUtils.toByteArray(is);
-
-            assertArrayEquals(expectedBytes, ImageUtils.writeImageToBytes(is2));
+            assertFalse(ImageUtils.isJpeg(bytes));
         }
     }
 

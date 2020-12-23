@@ -50,26 +50,26 @@ public final class ImageUtils {
     };
 
     /**
-     * Attempts to determine if the {@code file} is an acceptable image.
+     * Attempts to determine if the {@code file} is a JPEG image.
      *
      * @param file
      *              {@code File} containing image data.
-     * @return {@code true} If the {@code file} type is an acceptable image; otherwise, false.
+     * @return {@code true} If the {@code file} type is a JPEG image; otherwise, false.
      */
-    public static boolean isAcceptableImage(final File file) {
+    public static boolean isJpeg(final File file) {
         return FILENAME_FILTER.accept(file, FilenameUtils.getExtension(file.getName()));
     }
 
     /**
-     * Attempts to determine if the {@code bytes} is an acceptable image file.
+     * Attempts to determine if the {@code bytes} is a JPEG image file.
      *
      * @param bytes
      *              {@code byte[]} containing an image file.
-     * @return {@code true} If image is acceptable; otherwise false.
+     * @return {@code true} If image is JPEG; otherwise false.
      * @throws JpegAutorotateException
      *              In the event the image file type is unable to be determined.
      */
-    public static boolean isAcceptableImage(final byte[] bytes) throws JpegAutorotateException {
+    public static boolean isJpeg(final byte[] bytes) throws JpegAutorotateException {
         try (InputStream is = new ByteArrayInputStream(bytes)) {
             String contentType = URLConnection.guessContentTypeFromStream(is);
 
@@ -89,7 +89,7 @@ public final class ImageUtils {
      *              In the event the {@code InputStream} is unable to be read or write
      *              to a {@code byte[]}.
      */
-    public static byte[] writeImageToBytes(final InputStream is) throws JpegAutorotateException {
+    public static byte[] toByteArray(final InputStream is) throws JpegAutorotateException {
         try {
             return IOUtils.toByteArray(is);
         } catch (IOException e) {
