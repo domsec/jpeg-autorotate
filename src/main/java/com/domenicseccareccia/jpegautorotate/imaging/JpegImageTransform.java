@@ -105,7 +105,7 @@ final class JpegImageTransform {
                 image = rotate90CCW(image);
                 break;
             default:
-                throw new JpegAutorotateException("JPEG image has an unknown EXIF Orientation metadata tag.");
+                throw new JpegAutorotateException("JPEG image has an unknown EXIF Orientation metadata tag value: " + orientation);
         }
 
         return image;
