@@ -56,18 +56,20 @@ Alternatively, you can install the library via its [Maven package](https://searc
 
 The library will load an image by either a `String` file path, `File` or `InputStream`, apply rotation, update metadata and return the image as a byte array.
 
+**File Path**
 ```java
-// File path
 byte[] image = JpegAutorotate.rotate("path/to/directory");
+```
 
-// OR
-
-// File
+**File**
+        
+```java
 byte[] image = JpegAutorotate.rotate(new File("path/to/directory"));
+```
 
-// OR
-
-// InputStream
+**InputStream**
+        
+```java
 byte[] image = JpegAutorotate.rotate(new FileInputStream(new File("path/to/directory")));
 ```
 
