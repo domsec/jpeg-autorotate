@@ -21,7 +21,6 @@
 package com.domenicseccareccia.jpegautorotate.util;
 
 import com.domenicseccareccia.jpegautorotate.JpegAutorotateException;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -48,17 +47,6 @@ public final class ImageUtils {
 
         return false;
     };
-
-    /**
-     * Attempts to determine if the {@code file} is a JPEG image.
-     *
-     * @param file
-     *              {@code File} containing image data.
-     * @return {@code true} If the {@code file} type is a JPEG image; otherwise, false.
-     */
-    public static boolean isJpeg(final File file) {
-        return FILENAME_FILTER.accept(file, FilenameUtils.getExtension(file.getName()));
-    }
 
     /**
      * Attempts to determine if the {@code bytes} is a JPEG image file.
