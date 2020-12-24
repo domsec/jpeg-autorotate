@@ -42,7 +42,6 @@ import java.io.*;
  * <li>Retains and does not alter other metadata tags</li>
  * <li>Currently does not support updating MakerNotes metadata</li>
  * </ul>
- * <p>
  * <dl>
  * <dt><b>Usage:</b></dt>
  * <dd>
@@ -50,19 +49,17 @@ import java.io.*;
  * either passing a {@code String} file path, {@code File} or {@code InputStream}, apply rotation,
  * update metadata and return the image as {@code byte[]}.
  * <p>
+ * <b>File path</b>
  * <pre>
- *      // File path
- *      byte[] image = JpegAutorotate.rotate("path/to/directory");
- *
- *      // OR
- *
- *      // File
- *      byte[] image = JpegAutorotate.rotate(new File("path/to/directory"));
- *
- *      // OR
- *
- *      // InputStream
- *      byte[] image = JpegAutorotate.rotate(new FileInputStream(new File("path/to/directory")));
+ * byte[] image = JpegAutorotate.rotate("path/to/directory");
+ * </pre>
+ * <b>File</b>
+ * <pre>
+ * byte[] image = JpegAutorotate.rotate(new File("path/to/directory"));
+ * </pre>
+ * <b>InputStream</b>
+ * <pre>
+ * byte[] image = JpegAutorotate.rotate(new FileInputStream(new File("path/to/directory")));
  * </pre>
  * </dd>
  * </dl>
