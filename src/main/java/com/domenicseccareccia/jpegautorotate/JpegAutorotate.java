@@ -79,6 +79,13 @@ import java.io.*;
 public final class JpegAutorotate {
 
     /**
+     * Not intended for instantiation.
+     */
+    private JpegAutorotate() {
+        throw new IllegalStateException("Not intended for instantiation.");
+    }
+
+    /**
      * Rotates a JPEG image, based on its EXIF {@code Orientation} metadata tag.
      * <p>
      * Applies the right {@code Orientation} to the {@code JpegImage} by rotating the pixels,

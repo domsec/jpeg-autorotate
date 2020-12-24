@@ -29,13 +29,13 @@ import java.io.InputStream;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ImageUtilsTest {
+class ImageUtilsTest {
 
     private static final String JPEG_IMAGE = "src/test/resources/red_box.jpg";
     private static final String PNG_IMAGE = "src/test/resources/blue_box.png";
 
     @Test
-    public void testIsJpeg() throws Exception {
+    void testIsJpeg() throws Exception {
         // JPEG Image
         try (InputStream is = new FileInputStream(JPEG_IMAGE)) {
             byte[] bytes = ImageUtils.toByteArray(is);
