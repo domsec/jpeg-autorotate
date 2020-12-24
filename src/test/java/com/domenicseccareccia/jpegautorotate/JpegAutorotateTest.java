@@ -21,6 +21,7 @@
 
 package com.domenicseccareccia.jpegautorotate;
 
+import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.Imaging;
 import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
 import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
@@ -39,7 +40,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class JpegAutorotateTest {
+class JpegAutorotateTest {
 
     private static final String DIRECTORY = "src/test/resources";
     private static final String PNG_IMAGE = "src/test/resources/blue_box.png";
@@ -70,7 +71,7 @@ public class JpegAutorotateTest {
     private static final String NIKON_XMP_RESULT = "src/test/resources/exif/result_nikon_xmp.jpg";
 
     @Test
-    public void testRotateExceptions() throws Exception{
+    void testRotateExceptions() throws Exception{
         assertThrows(JpegAutorotateException.class, () -> JpegAutorotate.rotate(PNG_IMAGE));
         try (InputStream is = new FileInputStream(PNG_IMAGE)) {
             assertThrows(JpegAutorotateException.class, () -> JpegAutorotate.rotate(is));
@@ -92,7 +93,7 @@ public class JpegAutorotateTest {
     }
 
     @Test
-    public void testRotateNoExif() throws Exception {
+    void testRotateNoExif() throws Exception {
         assertThrows(JpegAutorotateException.class, () -> JpegAutorotate.rotate(NO_EXIF));
 
         try (InputStream is = new FileInputStream(NO_EXIF)) {
@@ -101,7 +102,7 @@ public class JpegAutorotateTest {
     }
 
     @Test
-    public void testRotateUnknownOrientation() throws Exception {
+    void testRotateUnknownOrientation() throws Exception {
         assertThrows(JpegAutorotateException.class, () -> JpegAutorotate.rotate(UNKNOWN_ORIENTATION));
 
         try (InputStream is = new FileInputStream(UNKNOWN_ORIENTATION)) {
@@ -110,7 +111,7 @@ public class JpegAutorotateTest {
     }
 
     @Test
-    public void testRotateOrientation() throws Exception {
+    void testRotateOrientation() throws Exception {
         testMetadata(ORIENTATION_1);
         testRotateAndFlipImage(ORIENTATION_1, ORIENTATION_1_RESULT);
 
@@ -211,6 +212,8 @@ public class JpegAutorotateTest {
                 assertEquals(originalImage.getHeight(), rotatedImage.getWidth());
                 assertEquals(originalImage.getWidth(), rotatedImage.getHeight());
                 break;
+            default:
+                break;
         }
 
         // Orientation
@@ -219,13 +222,13 @@ public class JpegAutorotateTest {
         if (originalImageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH) != null) {
             assertEquals(rotatedImage.getWidth(), rotatedImageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH).getIntValue());
         } else {
-            assertThrows(NullPointerException.class, () -> rotatedImageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH).getIntValue());
+            assertNull(rotatedImageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH));
         }
 
         if (originalImageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH) != null) {
             assertEquals(rotatedImage.getHeight(), rotatedImageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH).getIntValue());
         } else {
-            assertThrows(NullPointerException.class, () -> rotatedImageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH).getIntValue());
+            assertNull(rotatedImageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH));
         }
 
         TagInfoShort relatedImageWidth = new TagInfoShort("RelatedImageWidth", 0x1001, TiffDirectoryType.EXIF_DIRECTORY_INTEROP_IFD);
@@ -237,7 +240,7 @@ public class JpegAutorotateTest {
         if (originalImageOutputSet.findField(relatedImageHeight) != null) {
             assertEquals(rotatedImage.getHeight(), rotatedImageMetadata.findEXIFValue(relatedImageHeight).getIntValue());
         } else {
-            assertThrows(NullPointerException.class, () -> rotatedImageMetadata.findEXIFValue(relatedImageHeight).getIntValue());
+            assertNull(rotatedImageMetadata.findEXIFValue(relatedImageHeight));
         }
 
         // Thumbnail
@@ -259,6 +262,8 @@ public class JpegAutorotateTest {
                 case TiffTagConstants.ORIENTATION_VALUE_ROTATE_270_CW:
                     assertEquals(originalImageThumbnail.getWidth(), rotatedImageThumbnail.getHeight());
                     assertEquals(originalImageThumbnail.getHeight(), rotatedImageThumbnail.getWidth());
+                    break;
+                default:
                     break;
             }
         } else {
