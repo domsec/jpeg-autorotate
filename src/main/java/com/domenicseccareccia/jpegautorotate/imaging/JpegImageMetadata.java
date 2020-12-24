@@ -172,6 +172,8 @@ class JpegImageMetadata {
                         height = this.rawMetadata.findEXIFValue(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH).getIntValue();
                         width = this.rawMetadata.findEXIFValue(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH).getIntValue();
                         break;
+                    default:
+                        break;
                 }
 
                 updateExifHeight(height);
