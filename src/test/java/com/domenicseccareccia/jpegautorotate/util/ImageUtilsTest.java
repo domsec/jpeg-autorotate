@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2019-2020 Domenic Seccareccia and contributors
+ * Copyright (c) 2019-2021 Domenic Seccareccia and contributors
  * <p>
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
