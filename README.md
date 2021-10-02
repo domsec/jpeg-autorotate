@@ -104,6 +104,10 @@ The following icon changes were made:
 - Stroke width decreased for all icons by 0.25
 - Detached arrows from [sync-alt](https://fontawesome.com/icons/sync-alt?style=solid)
 
+### Original project
+
+- [johansatge/jpeg-autorotate](https://github.com/johansatge/jpeg-autorotate/)
+
 ### Other
 
 - [EXIF Info](https://exifinfo.org/)
