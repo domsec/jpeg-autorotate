@@ -22,8 +22,7 @@
 package com.domenicseccareccia.jpegautorotate.imaging;
 
 import com.domenicseccareccia.jpegautorotate.JpegAutorotateException;
-import org.apache.commons.imaging.ImageReadException;
-import org.apache.commons.imaging.ImageWriteException;
+import org.apache.commons.imaging.ImagingException;
 import org.apache.commons.imaging.formats.jpeg.exif.ExifRewriter;
 import org.apache.commons.imaging.formats.jpeg.iptc.JpegIptcRewriter;
 import org.apache.commons.imaging.formats.jpeg.xmp.JpegXmpRewriter;
@@ -196,7 +195,7 @@ public final class JpegImageProcessor {
 
             // Update IPTC/Photoshop metadata
             if (image.getMetadata().getPhotoshop() != null) {
-                new JpegIptcRewriter().writeIPTC(data, baos, image.getMetadata().getPhotoshop().photoshopApp13Data);
+                new JpegIptcRewriter().writeIptc(data, baos, image.getMetadata().getPhotoshop().photoshopApp13Data);
                 data = baos.toByteArray();
                 baos.reset();
             }
@@ -208,7 +207,7 @@ public final class JpegImageProcessor {
             }
 
             return data;
-        } catch (ImageWriteException | ImageReadException | IOException e) {
+        } catch (IOException e) {
             throw new JpegAutorotateException("Unable to read/write rotated JPEG image to byte array.", e);
         }
     }

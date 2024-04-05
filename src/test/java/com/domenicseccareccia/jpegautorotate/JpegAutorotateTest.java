@@ -21,7 +21,7 @@
 
 package com.domenicseccareccia.jpegautorotate;
 
-import org.apache.commons.imaging.ImageReadException;
+import org.apache.commons.imaging.ImagingException;
 import org.apache.commons.imaging.Imaging;
 import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
 import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
@@ -185,7 +185,7 @@ class JpegAutorotateTest {
         BufferedImage originalImage = ImageIO.read(new File(originalImagePath));
         JpegImageMetadata originalImageMetadata = (org.apache.commons.imaging.formats.jpeg.JpegImageMetadata) Imaging.getMetadata(originalImageBytes);
         TiffOutputSet originalImageOutputSet = originalImageMetadata.getExif().getOutputSet();
-        int originalImageOrientation = originalImageMetadata.findEXIFValueWithExactMatch(TiffTagConstants.TIFF_TAG_ORIENTATION).getIntValue();
+        int originalImageOrientation = originalImageMetadata.findExifValueWithExactMatch(TiffTagConstants.TIFF_TAG_ORIENTATION).getIntValue();
 
         // Initialize rotated image
         byte[] rotatedImageBytes = JpegAutorotate.rotate(originalImagePath);
@@ -217,37 +217,37 @@ class JpegAutorotateTest {
         }
 
         // Orientation
-        assertEquals(TiffTagConstants.ORIENTATION_VALUE_HORIZONTAL_NORMAL, rotatedImageMetadata.findEXIFValueWithExactMatch(TiffTagConstants.TIFF_TAG_ORIENTATION).getIntValue());
+        assertEquals(TiffTagConstants.ORIENTATION_VALUE_HORIZONTAL_NORMAL, rotatedImageMetadata.findExifValueWithExactMatch(TiffTagConstants.TIFF_TAG_ORIENTATION).getIntValue());
 
-        if (originalImageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH) != null) {
-            assertEquals(rotatedImage.getWidth(), rotatedImageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH).getIntValue());
+        if (originalImageMetadata.findExifValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH) != null) {
+            assertEquals(rotatedImage.getWidth(), rotatedImageMetadata.findExifValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH).getIntValue());
         } else {
-            assertNull(rotatedImageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH));
+            assertNull(rotatedImageMetadata.findExifValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH));
         }
 
-        if (originalImageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH) != null) {
-            assertEquals(rotatedImage.getHeight(), rotatedImageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH).getIntValue());
+        if (originalImageMetadata.findExifValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH) != null) {
+            assertEquals(rotatedImage.getHeight(), rotatedImageMetadata.findExifValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH).getIntValue());
         } else {
-            assertNull(rotatedImageMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH));
+            assertNull(rotatedImageMetadata.findExifValueWithExactMatch(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH));
         }
 
         TagInfoShort relatedImageWidth = new TagInfoShort("RelatedImageWidth", 0x1001, TiffDirectoryType.EXIF_DIRECTORY_INTEROP_IFD);
         if (originalImageOutputSet.findField(relatedImageWidth) != null) {
-            assertEquals(rotatedImage.getWidth(), rotatedImageMetadata.findEXIFValue(relatedImageWidth).getIntValue());
+            assertEquals(rotatedImage.getWidth(), rotatedImageMetadata.findExifValue(relatedImageWidth).getIntValue());
         }
 
         TagInfoShort relatedImageHeight = new TagInfoShort("RelatedImageHeight", 0x1002, TiffDirectoryType.EXIF_DIRECTORY_INTEROP_IFD);
         if (originalImageOutputSet.findField(relatedImageHeight) != null) {
-            assertEquals(rotatedImage.getHeight(), rotatedImageMetadata.findEXIFValue(relatedImageHeight).getIntValue());
+            assertEquals(rotatedImage.getHeight(), rotatedImageMetadata.findExifValue(relatedImageHeight).getIntValue());
         } else {
-            assertNull(rotatedImageMetadata.findEXIFValue(relatedImageHeight));
+            assertNull(rotatedImageMetadata.findExifValue(relatedImageHeight));
         }
 
         // Thumbnail
-        BufferedImage rotatedImageThumbnail = rotatedImageMetadata.getEXIFThumbnail();
-        BufferedImage originalImageThumbnail = originalImageMetadata.getEXIFThumbnail();
+        BufferedImage rotatedImageThumbnail = rotatedImageMetadata.getExifThumbnail();
+        BufferedImage originalImageThumbnail = originalImageMetadata.getExifThumbnail();
 
-        if (originalImageMetadata.getEXIFThumbnail() != null) {
+        if (originalImageMetadata.getExifThumbnail() != null) {
             switch (originalImageOrientation) {
                 case TiffTagConstants.ORIENTATION_VALUE_HORIZONTAL_NORMAL:
                 case TiffTagConstants.ORIENTATION_VALUE_MIRROR_HORIZONTAL:
@@ -272,20 +272,20 @@ class JpegAutorotateTest {
         }
 
         // GPS
-        if (originalImageOutputSet.getGPSDirectory() != null) {
-            List<TiffOutputField> originalImageGPSDirectories = originalImageOutputSet.getGPSDirectory().getFields();
-            List<TiffOutputField> rotatedImageGPSDirectories = rotatedImageOutputSet.getGPSDirectory().getFields();
+        if (originalImageOutputSet.getGpsDirectory() != null) {
+            List<TiffOutputField> originalImageGPSDirectories = originalImageOutputSet.getGpsDirectory().getFields();
+            List<TiffOutputField> rotatedImageGPSDirectories = rotatedImageOutputSet.getGpsDirectory().getFields();
 
             for (TiffOutputField originalTof : originalImageGPSDirectories) {
                 for (TiffOutputField rotatedTof : rotatedImageGPSDirectories) {
                     if (originalTof.tagInfo.name.equals(rotatedTof.tagInfo.name)) {
-                        assertEquals(originalTof.fieldType, rotatedTof.fieldType);
+                        assertEquals(originalTof.abstractFieldType, rotatedTof.abstractFieldType);
                         break;
                     }
                 }
             }
         } else {
-            assertNull(rotatedImageOutputSet.getGPSDirectory());
+            assertNull(rotatedImageOutputSet.getGpsDirectory());
         }
 
         // ICC Profile

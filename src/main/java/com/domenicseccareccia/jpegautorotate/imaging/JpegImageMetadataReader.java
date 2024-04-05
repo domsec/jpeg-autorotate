@@ -22,10 +22,9 @@
 package com.domenicseccareccia.jpegautorotate.imaging;
 
 import com.domenicseccareccia.jpegautorotate.JpegAutorotateException;
-import org.apache.commons.imaging.ImageReadException;
-import org.apache.commons.imaging.ImageWriteException;
 import org.apache.commons.imaging.Imaging;
 
+import org.apache.commons.imaging.ImagingException;
 import org.apache.commons.imaging.formats.tiff.TiffImageMetadata;
 import org.apache.commons.imaging.formats.tiff.write.TiffOutputSet;
 
@@ -58,7 +57,7 @@ final class JpegImageMetadataReader {
             }
 
             return (org.apache.commons.imaging.formats.jpeg.JpegImageMetadata) imageMetadata;
-        } catch (IOException | ImageReadException e) {
+        } catch (IOException e) {
             throw new JpegAutorotateException("Unable to read JPEG image metadata.", e);
         }
     }
@@ -99,7 +98,7 @@ final class JpegImageMetadataReader {
             }
 
             return exif.getOutputSet();
-        } catch (ImageWriteException e) {
+        } catch (ImagingException e) {
             throw new JpegAutorotateException("Unable to read JPEG image TIFF metadata.", e);
         }
     }
@@ -115,8 +114,8 @@ final class JpegImageMetadataReader {
      */
     protected static ICC_Profile readIccProfile(final byte[] bytes) throws JpegAutorotateException {
         try {
-            return Imaging.getICCProfile(bytes);
-        } catch (ImageReadException | IOException e) {
+            return Imaging.getIccProfile(bytes);
+        } catch (IOException e) {
             throw new JpegAutorotateException("Unable to read JPEG image ICC Profile metadata.", e);
         }
     }
@@ -133,7 +132,7 @@ final class JpegImageMetadataReader {
     protected static String readXmpXml(final byte[] bytes) throws JpegAutorotateException {
       try {
           return Imaging.getXmpXml(bytes);
-      } catch (IOException | ImageReadException e) {
+      } catch (IOException e) {
           throw new JpegAutorotateException("Unable to read JPEG image XMP metadata.", e);
       }
     }
@@ -150,8 +149,8 @@ final class JpegImageMetadataReader {
      */
     protected static BufferedImage readThumbnail(final org.apache.commons.imaging.formats.jpeg.JpegImageMetadata metadata) throws JpegAutorotateException {
         try {
-            return metadata.getEXIFThumbnail();
-        } catch (ImageReadException | IOException e) {
+            return metadata.getExifThumbnail();
+        } catch (IOException e) {
             throw new JpegAutorotateException("Unable to read JPEG image thumbnail.", e);
         }
     }

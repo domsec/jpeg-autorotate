@@ -22,8 +22,7 @@
 package com.domenicseccareccia.jpegautorotate.imaging;
 
 import com.domenicseccareccia.jpegautorotate.JpegAutorotateException;
-import org.apache.commons.imaging.ImageReadException;
-import org.apache.commons.imaging.ImageWriteException;
+import org.apache.commons.imaging.ImagingException;
 import org.apache.commons.imaging.formats.jpeg.JpegPhotoshopMetadata;
 import org.apache.commons.imaging.formats.tiff.*;
 import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
@@ -103,7 +102,7 @@ class JpegImageMetadata {
      *              In the event the EXIF {@code Orientation} metadata tag is not found.
      */
     protected int getOrientation() throws JpegAutorotateException {
-        TiffField field = this.rawMetadata.findEXIFValue(TiffTagConstants.TIFF_TAG_ORIENTATION);
+        TiffField field = this.rawMetadata.findExifValue(TiffTagConstants.TIFF_TAG_ORIENTATION);
 
         if (field == null) {
             throw new JpegAutorotateException("JPEG image does not have an EXIF Orientation metadata tag.");
@@ -111,7 +110,7 @@ class JpegImageMetadata {
 
         try {
             return field.getIntValue();
-        } catch (ImageReadException e) {
+        } catch (ImagingException e) {
             throw new JpegAutorotateException("Unable to read JPEG image EXIF Orientation metadata tag.", e);
         }
     }
@@ -127,7 +126,7 @@ class JpegImageMetadata {
     private TiffOutputDirectory getOrCreateExifDirectory() throws JpegAutorotateException {
         try {
             return this.outputSet.getOrCreateExifDirectory();
-        } catch (ImageWriteException e) {
+        } catch (ImagingException e) {
             throw new JpegAutorotateException("Unable to get or create JPEG image EXIF metadata directory.", e);
         }
     }
@@ -161,16 +160,16 @@ class JpegImageMetadata {
     private void updateAllMetadataDimensions() throws JpegAutorotateException {
         if (this.outputSet.findField(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH) != null || this.outputSet.findField(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH) != null) {
             try {
-                int height = this.rawMetadata.findEXIFValue(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH).getIntValue();
-                int width = this.rawMetadata.findEXIFValue(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH).getIntValue();
+                int height = this.rawMetadata.findExifValue(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH).getIntValue();
+                int width = this.rawMetadata.findExifValue(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH).getIntValue();
 
                 switch (this.originalOrientation) {
                     case TiffTagConstants.ORIENTATION_VALUE_MIRROR_HORIZONTAL_AND_ROTATE_270_CW:
                     case TiffTagConstants.ORIENTATION_VALUE_ROTATE_90_CW:
                     case TiffTagConstants.ORIENTATION_VALUE_MIRROR_HORIZONTAL_AND_ROTATE_90_CW:
                     case TiffTagConstants.ORIENTATION_VALUE_ROTATE_270_CW:
-                        height = this.rawMetadata.findEXIFValue(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH).getIntValue();
-                        width = this.rawMetadata.findEXIFValue(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH).getIntValue();
+                        height = this.rawMetadata.findExifValue(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH).getIntValue();
+                        width = this.rawMetadata.findExifValue(ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH).getIntValue();
                         break;
                     default:
                         break;
@@ -197,7 +196,7 @@ class JpegImageMetadata {
             this.outputSet.removeField(TiffTagConstants.TIFF_TAG_ORIENTATION);
 
             this.outputSet.getRootDirectory().add(TiffTagConstants.TIFF_TAG_ORIENTATION, ((Integer) TiffTagConstants.ORIENTATION_VALUE_HORIZONTAL_NORMAL).shortValue());
-        } catch (ImageWriteException e) {
+        } catch (ImagingException e) {
             throw new JpegAutorotateException("Unable to update JPEG image EXIF Orientation metadata tag to Horizontal (normal).", e);
         }
     }
@@ -225,7 +224,7 @@ class JpegImageMetadata {
 
                 this.exifDirectory.add(relatedImageWidth, ((Integer) width).shortValue());
             }
-        } catch (ImageWriteException e) {
+        } catch (ImagingException e) {
             throw new JpegAutorotateException("Unable to update JPEG image EXIF Image Width metadata tags.", e);
         }
     }
@@ -253,7 +252,7 @@ class JpegImageMetadata {
 
                 this.exifDirectory.add(relatedImageHeight, ((Integer) height).shortValue());
             }
-        } catch (ImageWriteException e) {
+        } catch (ImagingException e) {
             throw new JpegAutorotateException("Unable to update JPEG image EXIF Image Height metadata tags.", e);
         }
     }
